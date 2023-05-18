@@ -1,31 +1,40 @@
 <template>
   <div id="app">
     <nav>
-      <router-link to="/">Home</router-link> |
+      <AppNav/>
+      <div class="page">
+        <router-view/>
+      </div>
     </nav>
-    <router-view/>
   </div>
 </template>
 
+<script>
+import AppNav from "@/components/common/AppNav.vue";
+
+export default {
+  components : {
+    AppNav,
+  },
+};
+</script>
+
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
-nav {
-  padding: 30px;
+ul {
+padding-left: 0;
+list-style: none;
 }
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+.detail-view,
+.home-view,
+.profile-view,
+.search-view,
+.signup-view
+{
+  padding : 50px;
 }
 </style>
