@@ -1,40 +1,28 @@
 <template>
   <div id="app">
-    <nav>
-      <AppNav/>
-      <div class="page">
-        <router-view/>
-      </div>
-    </nav>
+    <img alt="Vue logo" src="./assets/logo.png">
+    <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
 
 <script>
-import AppNav from "@/components/common/AppNav.vue";
+import HelloWorld from './components/HelloWorld.vue'
 
 export default {
-  components : {
-    AppNav,
-  },
-};
+  name: 'App',
+  components: {
+    HelloWorld
+  }
+}
 </script>
 
 <style>
 #app {
-  font-family: "Noto Sans KR", sans-serif;
-}
-
-ul {
-padding-left: 0;
-list-style: none;
-}
-
-.detail-view,
-.home-view,
-.profile-view,
-.search-view,
-.signup-view
-{
-  padding : 50px;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 </style>
