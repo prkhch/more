@@ -22,10 +22,15 @@ def movie_detail(request, movie_pk):
             if movieserializer.is_valid(raise_exception=True):
                 movieserializer.save()
                 movie = get_object_or_404(Movie, pk=movie_pk)
-        comment = get_list_or_404(Comment, movie_id_id = movie_pk)
-        serializer = CommetListSerializer(comment, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
+        try:
+            comment = Comment.objects.get(movie_id_id = movie_pk)
+            serializer = CommetListSerializer(comment, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            data = {
+                'comment' : '등록된 댓글이 없습니다.'
+            }
+            return Response(data, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
 def comment_create(request, movie_pk):
