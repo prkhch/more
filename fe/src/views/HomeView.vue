@@ -1,18 +1,31 @@
 <template>
   <div class="home">
-    <h1>HOME</h1>
+    <h1 class="text-center">인기 영화</h1>
 
-    <div class="cardgroup row row-cols-1 row-cols-md-4 g-4">
-      <div class="col" v-for="movie in movies" :key="movie.id">
-        <div class="card">
-          <img :src="getImageUrl(movie.poster_path)" class="card-img-top border" alt="...">
-          <div class="card-body border">
-            <router-link :to="{ name: 'detail', params: { id: movie.id } }">{{ movie.title }}</router-link>
+    <div class="" style="display: flex; justify-content: center; align-items: center;">
+      <div class="cardgroup row row-cols-1 row-cols-md-5 g-5 mt-3">
+        <div class="col" v-for="movie in movies" :key="movie.id">
+          <div class="card">
+            <router-link :to="{ name: 'detail', params: { id: movie.id } }">
+              <div class="image-container">
+                <img :src="getImageUrl(movie.poster_path)" class="card-img-top border" alt="..." @click="playSound" @mouseover="handleHover(movie)" @mouseleave="handleHover(null)">
+              </div>
+            </router-link>
+          </div>
+          <div style="height:20px">
+            <transition name="fade">
+              <div class="movie-title" v-if="hoveredMovie === movie">{{ movie.title }}</div>
+            </transition>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- 로딩 표시 -->
+    <div class="text-center" v-if="loading">
+      <i class="fa-solid fa-spinner" style="color: #000000; font-size:250px;"></i>
+    </div>
+    
   </div>
 </template>
 
@@ -21,25 +34,21 @@ import axios from "axios"
 
 export default {
   name: 'HomeView',
-  components: {
-    
-  },
+  components: {},
   data() {
     return {
-      page: 1,
       movies: [],
+      hoveredMovie: null,
+      page: 1,
       loading: false,
     };
   },
-  created() {
-    this.loadMoreMovies();
+  mounted() {
+    this.fetchMovies();
     window.addEventListener('scroll', this.handleScroll);
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleScroll);
-  },
-  mounted() {
-    this.fetchMovies();
   },
   methods: {
     getImageUrl(posterPath) {
@@ -47,23 +56,13 @@ export default {
       const size = 'w500';
       return `${baseUrl}${size}${posterPath}`;
     },
-    fetchMovies() {
-      const apiKey = '8b1a427d0c951e52a5869304bde7a649';
-      const url = `https://api.themoviedb.org/3/movie/upcoming?api_key=${apiKey}&language=ko-KR&page=1`
-      axios.get(url)
-        .then((response) => {
-          this.movies = response.data.results;
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-    },
-    async loadMoreMovies() {
+    
+    async fetchMovies() {
       if (this.loading) return;
       this.loading = true;
 
       const apiKey = '8b1a427d0c951e52a5869304bde7a649';
-      const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&page=${this.page}&language=ko-KR`;
+      const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=ko-KR&page=${this.page}&certification_country=KR&certification.lte=15`
 
       try {
         const response = await axios.get(apiUrl);
@@ -79,10 +78,53 @@ export default {
     handleScroll() {
       const scrollPosition = window.innerHeight + window.scrollY;
       const documentHeight = document.documentElement.offsetHeight;
-      if (scrollPosition >= documentHeight) {
-        this.loadMoreMovies();
+      if (scrollPosition >= documentHeight-1) {
+        this.fetchMovies();
       }
+    },
+
+    // 스타일
+    handleHover(movie) {
+      this.hoveredMovie = movie;
+    },
+    playSound() {
+      var audio = new Audio(require('@/assets/click.mp3'));
+      audio.play()
+        .catch(error => {
+          console.error('소리를 재생할 수 없습니다:', error);
+        });
     },
   },
 }
 </script>
+
+<style>
+.cardgroup {
+  width: 90%
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  padding-top: 150%;
+}
+
+.image-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

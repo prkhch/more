@@ -29,6 +29,11 @@ export default new Vuex.Store({
     SAVE_USERNAME(state, newUsername) { // 이름변경
       state.username = newUsername;
     },
+    CLEAR_AUTH(state) {
+      state.token = null;
+      state.username = null;
+      router.push({ name: 'login' }); // 로그인 페이지로 이동
+    },
   },
   actions: {
     signUp(context, payload) {
@@ -66,7 +71,13 @@ export default new Vuex.Store({
       })
       .catch((error) => {
         console.log(error)
+        if(error.response.status === 400) {
+          alert("잘못된 입력입니다!")
+        }
       })
+    },
+    logout({ commit }) {
+      commit('CLEAR_AUTH');
     },
   },
   modules: {

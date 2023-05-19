@@ -1,17 +1,73 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/search">검색</router-link> |
-      <router-link v-if="hasToken" to="/later">나중에 볼 영화</router-link> |
-      <router-link v-if="hasToken" to="/profile">{{ $store.state.username }}</router-link>
-      <button v-if="hasToken" @click="logout">로그아웃</button>
-      <!-- <router-link v-else to="/login">로그인</router-link> | -->
-      <router-link to="/login">로그인</router-link> |
-    </nav>
-    <router-view/>
+
+  <nav>
+    <div class="left-links">
+      <div @click="playSound">
+        <router-link to="/">Home</router-link>
+      </div>
+      
+      <div @click="playSound">
+        <router-link to="/search">
+        <i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>
+        </router-link>
+      </div>
+      
+    </div>
+
+    <div class="right-links">
+      <div v-if="hasToken" @click="playSound">
+        <router-link to="/later">나중에 볼 영화</router-link>
+      </div>
+      <div v-if="hasToken" @click="playSound">
+        <router-link to="/profile">{{ $store.state.username }}</router-link>
+      </div>
+      <div v-if="hasToken" @click="playSound">
+        <button @click="logout">로그아웃</button>
+      </div>
+      <div v-else @click="playSound">
+        <router-link to="/login">로그인</router-link>
+        <router-link to="/signup">회원가입</router-link>
+      </div>
+  
+    </div>
+  </nav>
+
+    <!-- router-view -->
+    <div class="page">
+      <router-view/> 
+    </div>
+
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      showSearch: false,
+    };
+  },
+  computed: {
+    hasToken() {
+      return this.$store.state.token !== null;
+    },
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout');
+    },
+    playSound() {
+      var audio = new Audio(require('@/assets/click.mp3'));
+      audio.play()
+        .catch(error => {
+            // 오류 처리 로직 추가
+            console.error('소리를 재생할 수 없습니다:', error);
+          });
+    },
+  },
+};
+</script>
 
 <style>
 #app {
@@ -22,18 +78,45 @@ ul {
   list-style : none;
 }
 .page {
-  padding-top:3rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
 }
+
+/* navbar Style */
+nav {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+.left-links {
+  display: flex;
+  align-items: center;
+}
+.right-links {
+  display: flex;
+  align-items: center;
+}
+.left-links a,
+.right-links a,
+.right-links button {
+  margin: 0 10px;
+  padding: 5px 10px;
+  background-color: #fff;
+  color: #333;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: box-shadow 0.3s;
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+
+}
+.left-links a:hover,
+.right-links a:hover,
+.right-links button:hover {
+  box-shadow: 0px 2px 5px 2px rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+}
+
 </style>
 
-<script>
-export default {
-  computed: {
-    hasToken() {
-      return this.$store.state.token !== null;
-    },
-  },
-  methods: {
-  },
-};
-</script>
