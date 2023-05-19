@@ -1,15 +1,20 @@
 <template>
   <div class="detail">
+
     <h2>Movie Detail</h2>
     <img :src="getImageUrl(movie.poster_path)" class="card-img-top border" style="width:300px; height:300px;" alt="...">
     <div>{{ movie.title }}</div>
     <div>{{ movie.overview }}</div>
     <div>
       <h1>DetailComments</h1>
+      <h3>댓글 작성</h3>
+      <input type="text" class="form-control" v-model="content"/>
+      <button type="button" class="btn btn-primary" @click="createComment(movie.id)">댓글 추가</button>
       <ul>
         <li v-for="comment in comments" :key="comment.id">
           {{ comment.id }}
           {{ comment.content }}
+          <input type="submit" value="삭제" @click="deleteComment(movie.id, comment.id)">
         </li>
       </ul>
     </div>
@@ -29,6 +34,12 @@ export default {
     return {
       movie: {title : null, overview : null},
       comments: [],
+      content: "",
+    }
+  },
+  computed: {
+    isLogin() {
+      return this.$store.getters.isLogin
     }
   },
   created() {
@@ -63,6 +74,42 @@ export default {
         .catch((error) => {
           console.error(error);
         });
+    },
+    deleteComment(movie_id, comment_id) {
+      axios
+        .delete(
+          `${this.$store.state.URL}/api/v1/comments/${comment_id}/`,
+          {headers : {Authorization: `Token ${this.$store.state.token}`}}
+        )
+        .then(() => {
+            const updatedComments = this.comments.filter(comment => comment.id !== comment_id);
+            this.comments = updatedComments;
+        })
+        .catch((error) => {
+          console.log(error);
+          if(error.response.status === 401) {
+            alert("로그인 후 이용하세요.")
+          }
+        })
+    },
+    createComment(movieId) {
+      if(this.content.length) {
+        axios
+          .post(
+            `${this.$store.state.URL}/api/v1/${movieId}/comments/`,
+            {content: this.content, movie_id: movieId, user_id: 1}
+          )
+          .catch((error) => {
+            console.log(error);
+            if(error.response.status === 404) {
+              alert("로그인 후 이용하세요.")
+            }
+          })
+          
+        this.content = "";
+      } else {
+        alert("작성할 댓글 내용을 입력하세요.")
+      }
     },
   },
 }

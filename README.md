@@ -36,7 +36,7 @@ BE
 
 - 로그인, 회원가입
 
-<img title="" src="img/day2.png" alt="loading-ag-578">
+<img title="" src="history/day2.png" alt="loading-ag-578">
 
 ## DAY-1
 

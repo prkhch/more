@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import axios from "axios"
+// import axios from "axios"
 
 export default {
   data() {
@@ -39,20 +39,26 @@ export default {
   },
   methods: {
     login() {
-      axios
-        .post(`${this.$store.state.URL}/accounts/login/`, { // store.state.URL은 벡엔드 주소다.
-          username : this.username,
-          password : this.password,
-        })
-        .then((flag) => {
-          if(flag) {
-            alert("로그인 성공");
-            this.$router.push({name:"home"})
-          } else {
-            alert("로그인 실패");
-          }
-        })
-        .catch((error) => console.error(error));
+      const username = this.username
+      const password = this.password
+      const payload = {
+        username, password
+      }
+      this.$store.dispatch('login', payload)
+      // axios
+      //   .post(`${this.$store.state.URL}/accounts/login/`, { // store.state.URL은 벡엔드 주소다.
+      //     username : this.username,
+      //     password : this.password,
+      //   })
+      //   .then((flag) => {
+      //     if(flag) {
+      //       alert("로그인 성공");
+      //       this.$router.push({name:"home"})
+      //     } else {
+      //       alert("로그인 실패");
+      //     }
+      //   })
+      //   .catch((error) => console.error(error));
     }
   }
 }
