@@ -23,7 +23,7 @@ def movie_detail(request, movie_pk):
                 movieserializer.save()
                 movie = get_object_or_404(Movie, pk=movie_pk)
         try:
-            comment = Comment.objects.get(movie_id_id = movie_pk)
+            comment = Comment.objects.filter(movie_id_id = movie_pk)
             serializer = CommetListSerializer(comment, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
@@ -41,7 +41,7 @@ def comment_create(request, movie_pk):
     print(request.data)
     if serializer.is_valid(raise_exception=True):
         print(5)
-        serializer.save(movie=movie, user=request.user)
+        serializer.save()
         print(4)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:

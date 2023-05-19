@@ -4,6 +4,15 @@
     <img :src="getImageUrl(movie.poster_path)" class="card-img-top border" style="width:300px; height:300px;" alt="...">
     <div>{{ movie.title }}</div>
     <div>{{ movie.overview }}</div>
+    <div>
+      <h1>DetailComments</h1>
+      <ul>
+        <li v-for="comment in comments" :key="comment.id">
+          {{ comment.id }}
+          {{ comment.content }}
+        </li>
+      </ul>
+    </div>
     
     <!-- 영화의 다른 정보들을 표시 -->
   </div>
@@ -14,15 +23,18 @@ import axios from "axios"
 
 export default {
   name: 'DetailView',
+  components : {
+  },
   data() {
     return {
-      movie: {title : null, overview : null}
+      movie: {title : null, overview : null},
+      comments: [],
     }
   },
-  mounted() {
+  created() {
     const id = this.$route.params.id; // id 파라미터 가져오기
     this.fetchMovie(id);
-    this.getComments()
+    this.fetchComments(id);
   },
   methods: {
     getImageUrl(posterPath) {
@@ -42,28 +54,16 @@ export default {
           console.log(error);
         })
     },
-    getComments() {
+    fetchComments(id) {
       axios
-      .get( // get(백엔드API, 토큰)
-        // 라우트 매개변수 id를 사용하여 백엔드 API호출
-        `${this.$store.state.URL}/api/v1/${this.$route.params.id}/`,
-      )
-      .then((response) => { // 응답
-        console.log(response)
-        // if(response.status === 200) { 
-        //   this.movie = response.data; // 응답데이터=>게시글
-        //   if(this.movie.user.username === this.$store.state.username) { // 게시글 작성자 === 현재 유저
-        //     this.isUser = true; // 작성자 확인 true
-        //   }
-        // }
-        if (response.status == 404) {
-          console.log('ㅎㅎ')
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-    }
+        .get(`${this.$store.state.URL}/api/v1/movies/${id}/`)
+        .then((response) => {
+          this.comments = response.data;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
   },
 }
 </script>

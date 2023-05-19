@@ -2,9 +2,8 @@
   <div id="app">
     <nav>
       <router-link to="/">Home</router-link> |
-      <router-link to="/">Detail</router-link> |
-      <router-link to="/">Signup</router-link> |
-      <router-link to="/">Login</router-link> |
+      <router-link to="/signup">Signup</router-link> |
+      <router-link to="/login">Login</router-link> |
       <router-link to="/">Search</router-link> |
       <router-link to="/">Profile</router-link> |
       <router-link to="/">Later</router-link> |
