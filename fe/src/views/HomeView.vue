@@ -2,7 +2,7 @@
   <div class="home">
     <h1>HOME</h1>
 
-    <div class="cardgroup row row-cols-1 row-cols-md-3 g-4">
+    <div class="cardgroup row row-cols-1 row-cols-md-4 g-4">
       <div class="col" v-for="movie in movies" :key="movie.id">
         <div class="card">
           <img :src="getImageUrl(movie.poster_path)" class="card-img-top border" alt="...">

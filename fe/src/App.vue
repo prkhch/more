@@ -2,11 +2,12 @@
   <div id="app">
     <nav>
       <router-link to="/">Home</router-link> |
-      <router-link to="/signup">Signup</router-link> |
-      <router-link to="/login">Login</router-link> |
-      <router-link to="/">Search</router-link> |
-      <router-link to="/">Profile</router-link> |
-      <router-link to="/">Later</router-link> |
+      <router-link to="/search">검색</router-link> |
+      <router-link v-if="hasToken" to="/later">나중에 볼 영화</router-link> |
+      <router-link v-if="hasToken" to="/profile">{{ $store.state.username }}</router-link>
+      <button v-if="hasToken" @click="logout">로그아웃</button>
+      <router-link v-else to="/login">로그인</router-link> |
+      <router-link to="/login">로그인</router-link> |
     </nav>
     <router-view/>
   </div>
@@ -24,3 +25,15 @@ ul {
   padding-top:3rem;
 }
 </style>
+
+<script>
+export default {
+  computed: {
+    hasToken() {
+      return this.$store.state.token !== null;
+    },
+  },
+  methods: {
+  },
+};
+</script>

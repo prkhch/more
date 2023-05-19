@@ -1,5 +1,6 @@
 <template>
   <div class="detail">
+
     <h2>Movie Detail</h2>
     <img :src="getImageUrl(movie.poster_path)" class="card-img-top border" style="width:300px; height:300px;" alt="...">
     <div>{{ movie.title }}</div>
@@ -84,7 +85,12 @@ export default {
             const updatedComments = this.comments.filter(comment => comment.id !== comment_id);
             this.comments = updatedComments;
         })
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          console.log(error);
+          if(error.response.status === 401) {
+            alert("로그인 후 이용하세요.")
+          }
+        })
     },
     createComment(movieId) {
       if(this.content.length) {
@@ -93,6 +99,13 @@ export default {
             `${this.$store.state.URL}/api/v1/${movieId}/comments/`,
             {content: this.content, movie_id: movieId, user_id: 1}
           )
+          .catch((error) => {
+            console.log(error);
+            if(error.response.status === 404) {
+              alert("로그인 후 이용하세요.")
+            }
+          })
+          
         this.content = "";
       } else {
         alert("작성할 댓글 내용을 입력하세요.")

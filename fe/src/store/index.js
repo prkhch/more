@@ -26,6 +26,9 @@ export default new Vuex.Store({
       console.log(token)
       router.push({name:'home'})
     },
+    SAVE_USERNAME(state, newUsername) { // 이름변경
+      state.username = newUsername;
+    },
   },
   actions: {
     signUp(context, payload) {
@@ -41,6 +44,7 @@ export default new Vuex.Store({
       })
       .then((response) => {
         context.commit('SAVE_TOKEN', response.data.key)
+        context.commit("SAVE_USERNAME", username);
       })
       .catch((error) => {
         console.log(error)
@@ -58,6 +62,7 @@ export default new Vuex.Store({
       })
       .then((response) => {
         context.commit('SAVE_TOKEN', response.data.key)
+        context.commit("SAVE_USERNAME", username);
       })
       .catch((error) => {
         console.log(error)
@@ -65,5 +70,5 @@ export default new Vuex.Store({
     },
   },
   modules: {
-  }
+  },
 })

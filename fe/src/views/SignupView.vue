@@ -46,22 +46,6 @@ export default {
         username, password1, password2
       }
       this.$store.dispatch('signUp', payload)
-      // axios
-      //   .post(`${this.$store.state.URL}/accounts/signup/`, { // store.state.URL은 벡엔드 주소다.
-      //     username: this.username,
-      //     password1: this.password1,
-      //     password2: this.password2,
-      //   })
-      //   .then((response) => {
-      //     if(response.status === 204) {
-      //       alert("회원가입 성공")
-      //       this.$router.push({name : "home"});
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.error(error);
-      //     alert("회원가입 실패")
-      //   })
     }
   }
 }
