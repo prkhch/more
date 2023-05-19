@@ -6,7 +6,7 @@
       <router-link v-if="hasToken" to="/later">나중에 볼 영화</router-link> |
       <router-link v-if="hasToken" to="/profile">{{ $store.state.username }}</router-link>
       <button v-if="hasToken" @click="logout">로그아웃</button>
-      <router-link v-else to="/login">로그인</router-link> |
+      <!-- <router-link v-else to="/login">로그인</router-link> | -->
       <router-link to="/login">로그인</router-link> |
     </nav>
     <router-view/>
