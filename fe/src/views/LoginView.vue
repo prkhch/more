@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import axios from "axios"
+
 export default {
   data() {
     return {
@@ -37,15 +39,15 @@ export default {
   },
   methods: {
     login() {
-      this.$store
-        .dispatch("login", { // 액션 로그인({유저네임, 패스워드}) 호출
+      axios
+        .post(`${this.$store.state.URL}/accounts/login/`, { // store.state.URL은 벡엔드 주소다.
           username : this.username,
           password : this.password,
         })
         .then((flag) => {
           if(flag) {
             alert("로그인 성공");
-            this.$router.push({name:"board"})
+            this.$router.push({name:"home"})
           } else {
             alert("로그인 실패");
           }
