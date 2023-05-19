@@ -16,14 +16,14 @@ def movie_detail(request, movie_pk):
             movie = get_object_or_404(Movie, pk=movie_pk)
         except:
             movie_data = {
-                'movie_id':movie_pk
+                'id':movie_pk
             }
             movieserializer = MovieSerializer(data=movie_data)
             if movieserializer.is_valid(raise_exception=True):
                 movieserializer.save()
                 movie = get_object_or_404(Movie, pk=movie_pk)
         try:
-            comment = Comment.objects.filter(movie_id_id = movie_pk)
+            comment = Comment.objects.filter(movie = movie_pk)
             serializer = CommetListSerializer(comment, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
@@ -33,15 +33,18 @@ def movie_detail(request, movie_pk):
             return Response(data, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
+# @permission_classes(['IsAuthenticated'])
 def comment_create(request, movie_pk):
     print(1)
     movie = get_object_or_404(Movie, pk=movie_pk)
-    print(2)
     serializer = CommentSerializer(data=request.data)
     print(request.data)
+    print(1)
+    print(serializer)
     if serializer.is_valid(raise_exception=True):
         print(5)
-        serializer.save()
+        serializer.save(movie_id=movie.pk, user_id=1)
+        print(serializer.data)
         print(4)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
