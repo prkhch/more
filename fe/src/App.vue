@@ -9,7 +9,7 @@
       
       <div @click="playSound">
         <router-link to="/search">
-        <i class="fa-solid fa-magnifying-glass" style="color: #000000;"></i>
+        <i class="fa-solid fa-magnifying-glass" style="color: #FFFFFF;"></i>
         </router-link>
       </div>
       
@@ -17,10 +17,10 @@
 
     <div class="right-links">
       <div v-if="hasToken" @click="playSound">
-        <router-link to="/later">나중에 볼 영화</router-link>
+        <router-link to="/profile">{{ $store.state.username }}</router-link>
       </div>
       <div v-if="hasToken" @click="playSound">
-        <router-link to="/profile">{{ $store.state.username }}</router-link>
+        <router-link to="/later">나중에 볼 영화</router-link>
       </div>
       <div v-if="hasToken" @click="playSound">
         <button @click="logout">로그아웃</button>
@@ -42,6 +42,11 @@
 </template>
 
 <script>
+import Vue from 'vue';
+import VueCarousel from 'vue-carousel';
+
+Vue.use(VueCarousel);
+
 export default {
   data() {
     return {
@@ -77,17 +82,28 @@ ul {
   padding-left : 0;
   list-style : none;
 }
-.page {
+.detail-view,
+.home-view,
+.search-view,
+.login-view,
+.profile-view,
+.signup-view,
+.later-view {
   padding-left: 3rem;
   padding-right: 3rem;
+  background-color : black;
+  color : white;
 }
+
 
 /* navbar Style */
 nav {
   padding: 1rem;
   display: flex;
   justify-content: space-between;
+  background-color: rgba(0,0,0,1);
 }
+
 .left-links {
   display: flex;
   align-items: center;
@@ -101,20 +117,20 @@ nav {
 .right-links button {
   margin: 0 10px;
   padding: 5px 10px;
-  background-color: #fff;
-  color: #333;
+  background-color: black;
+  color: white;
   border: none;
   cursor: pointer;
   text-decoration: none;
   display: inline-block;
   transition: box-shadow 0.3s;
-  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+  box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0);
 
 }
 .left-links a:hover,
 .right-links a:hover,
 .right-links button:hover {
-  box-shadow: 0px 2px 5px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 2px 5px 2px rgba(255, 255, 255, 0.4);
   border-radius: 5px;
 }
 

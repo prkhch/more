@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="signup-view">
     <h1>회원가입</h1>
     <div class="form-floating">
       <input type="text" 

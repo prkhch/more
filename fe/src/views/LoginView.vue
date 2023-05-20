@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="login-view">
     <h1>LoginView</h1>
     <!-- form-floating : 부트스트랩 -->
     <div class="form-floating">

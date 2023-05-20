@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="search-view">
     <input type="text" v-model="searchTerm" @input="searchMovies" placeholder="영화 검색" />
     
 

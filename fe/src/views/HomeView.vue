@@ -1,6 +1,6 @@
 <template>
-  <div class="home">
-    <h1 class="text-center">인기 영화</h1>
+  <div class="home-view">
+    <h1 class="text-center text-light">인기 영화</h1>
 
     <div class="" style="display: flex; justify-content: center; align-items: center;">
       <div class="cardgroup row row-cols-1 row-cols-md-5 g-5 mt-3">
@@ -78,9 +78,12 @@ export default {
     handleScroll() {
       const scrollPosition = window.innerHeight + window.scrollY;
       const documentHeight = document.documentElement.offsetHeight;
+      const body = document.body;
+      body.style.backgroundColor = '#FFFFFF';
       if (scrollPosition >= documentHeight-1) {
         this.fetchMovies();
-      }
+        
+      }     
     },
 
     // 스타일
@@ -99,6 +102,11 @@ export default {
 </script>
 
 <style>
+.movie-title {
+  color: white;
+  font-size : 20px;
+}
+
 .cardgroup {
   width: 90%
 }
@@ -127,4 +135,5 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
+
 </style>
