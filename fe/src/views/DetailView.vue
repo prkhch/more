@@ -6,6 +6,9 @@
     <div v-else><i class="fa-solid fa-spinner fa-spin" style="color: #000000; font-size:100px;"></i></div>
     <div>{{ movie.title }}</div>
     <div>{{ movie.overview }}</div>
+    <br>
+    <button type="button" class="btn btn-primary" @click="like_movie(movie.id)">좋아요</button>
+    <br>
     <div>
       <h1>DetailComments</h1>
       <h3>댓글 작성</h3>
@@ -80,37 +83,43 @@ export default {
         });
     },
     deleteComment(comment_id) {
-      const currentUserId = this.$store.state.user_id;
+      // const currentUserId = this.$store.state.user_id;
 
-      // 찾고 있는 코멘트
-      const commentToDelete = this.comments.find(comment => comment.id === comment_id);
-
-      // 코멘트 작성자의 ID와 현재 사용자의 ID 비교
-      if (commentToDelete.user_id === currentUserId) {
+      // // 찾고 있는 코멘트
+      // const commentToDelete = this.comments.find(comment => comment.id === comment_id);
+      // // 코멘트 작성자의 ID와 현재 사용자의 ID 비교
+      // if (commentToDelete.user_id === currentUserId) {
         axios
           .delete(
-            `${this.$store.state.URL}/api/v1/comments/${comment_id}/`,
+            `${this.$store.state.URL}/api/v1/comments/${comment_id}/${this.$store.state.username}/`,
             {headers : {Authorization: `Token ${this.$store.state.token}`}}
           )
           .then(() => {
-              const updatedComments = this.comments.filter(comment => comment.id !== comment_id);
-              this.comments = updatedComments;
+            const updatedComments = this.comments.filter(comment => comment.id !== comment_id);
+            this.comments = updatedComments;
           })
           .catch((error) => {
             console.log(error);
             if(error.response.status === 401) {
-              alert("로그인 후 이용하세요.")
+              if (this.$store.state.token === null) {
+                alert("로그인 후 이용하세요.")
+              } else {
+                alert("로그인한 유저가 작성한 글이 아닙니다.")
+              }
             }
           })
-      }
+      // }
     },
     createComment(movieId) {
       if(this.content.length) {
         axios
           .post(
-            `${this.$store.state.URL}/api/v1/movies/${movieId}/comment`,
-            {content: this.content, movie_id: movieId, user_id: 1}
+            `${this.$store.state.URL}/api/v1/movies/${movieId}/comment/${this.$store.state.username}/`,
+            {content: this.content}
           )
+          .then(() => {
+            this.fetchComments(movieId)
+          })
           .catch((error) => {
             console.log(error);
             if(error.response.status === 404) {
@@ -123,6 +132,19 @@ export default {
         alert("작성할 댓글 내용을 입력하세요.")
       }
     },
+    like_movie(movieId) {
+      axios
+        .post(
+          `${this.$store.state.URL}/api/v1/movies/${movieId}/like/${this.$store.state.username}/`
+        )
+        .then((response) => {
+          if (response.data.islike === 'like') {
+            console.log('좋아요')
+          } else {
+            console.log('이제 안 좋아요')
+          }
+        })
+    }
   },
 }
 </script>
