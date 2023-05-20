@@ -6,6 +6,7 @@ from .serializers.comment import CommentSerializer, CommetListSerializer, Commen
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .models import Movie, Comment
+from accounts.models import User
 
 
 @api_view(['GET'])
@@ -33,10 +34,13 @@ def movie_detail(request, movie_pk):
             return Response(data, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
-# @permission_classes(['IsAuthenticated'])
+@permission_classes(['IsAuthenticated'])
 def comment_create(request, movie_pk):
+    print("request@@@@@@@@@@@@@@@@@")
+    print(request)
     print(1)
     movie = get_object_or_404(Movie, pk=movie_pk)
+    # user = get_object_or_404(User, pk=request.POST.get('user_id'))
     serializer = CommentSerializer(data=request.data)
     print(request.data)
     print(1)

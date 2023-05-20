@@ -30,7 +30,7 @@ BE
 
 - 댓글 작성 및 삭제
 
-
+<img title="" src="history/day3.png" alt="">
 
 ## DAY-2
 

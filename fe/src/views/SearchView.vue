@@ -24,7 +24,7 @@
 
   <!-- 로딩 표시 -->
     <div class="text-center" v-if="loading">
-      <i class="fa-solid fa-spinner" style="color: #000000; font-size:250px;"></i>
+      <i class="fa-solid fa-spinner fa-spin" style="color: #000000; font-size:100px;"></i>
     </div>
 
   </div>

@@ -53,32 +53,44 @@ export default new Vuex.Store({
       })
       .catch((error) => {
         console.log(error)
-      })
-    },
-    login(context, payload) {
-      const username = payload.username
-      const password = payload.password
-      axios({
-        method: 'post',
-        url: `http://localhost:8000/accounts/login/`,
-        data: {
-          username, password
-        }
-      })
-      .then((response) => {
-        context.commit('SAVE_TOKEN', response.data.key)
-        context.commit("SAVE_USERNAME", username);
-      })
-      .catch((error) => {
-        console.log(error)
         if(error.response.status === 400) {
           alert("잘못된 입력입니다!")
         }
       })
     },
-    logout({ commit }) {
-      commit('CLEAR_AUTH');
+    async login(context, payload) {
+      try {
+        const username = payload.username
+        const password = payload.password
+        const response = await axios.post("http://localhost:8000/accounts/login/", {
+          username : username,
+          password : password,
+        });
+        console.log(response)
+        if (response.data) {
+          console.log(response.data);
+          context.commit('SAVE_TOKEN', response.data.key)
+          context.commit("SAVE_USERNAME", username);
+        } 
+      } catch (error) {
+        console.log(error);
+        if(error.response.status === 400) {
+          alert("잘못된 입력입니다!")
+        }
+      }
     },
+    async logout(context) {
+      try {
+        const response = await axios.post("http://localhost:8000/accounts/logout/")
+        if(response.data) {
+          console.log(response.data)
+          context.commit('CLEAR_AUTH');
+        }
+      } catch(error) {
+        console.log(error)
+      }
+    },
+
   },
   modules: {
   },

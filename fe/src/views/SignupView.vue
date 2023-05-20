@@ -19,7 +19,8 @@
       <input type="password" 
       class="form-control" 
       id="user-password2"
-      v-model="password2"/>
+      v-model="password2"
+      @keyup.enter="signup"/>
       <label for="user-password2">비밀번호를 다시 입력하세요</label>
     </div>
     <button type="button" class="btn btn-primary" @click="signup">회원가입</button>
