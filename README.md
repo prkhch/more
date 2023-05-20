@@ -2,6 +2,8 @@
 
 ## 프로젝트 이름
 
+##### Django, Vue.js
+
 ##### ERD
 
 img
@@ -10,9 +12,19 @@ img
 
 img
 
-- 박희창
+- 박희창,최찬석
 
-- 최찬석
+- ## DAY-4
+
+FE
+
+- 홈페이지, 상세페이지 레이아웃
+
+BE
+
+- 영화 좋아요
+
+<img title="" src="history/day4.png" alt="">
 
 ## DAY-3
 
