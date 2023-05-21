@@ -1,7 +1,12 @@
 <template>
   <div class="later-view">
-    <h1 >LaterView.vue</h1>
-    <h1><li v-for="id in result" :key="id">{{id}}</li></h1>
+    <div class="dropdown dropstart" style="position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 999;">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <li v-for="id in result" :key="id">{{id}}</li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -18,6 +23,7 @@ export default {
   },
   created() {
     const username = this.$route.params.username;
+    console.log(this.$route.params.username)
     this.fetchLater(username);
   },
   methods : {

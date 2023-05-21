@@ -1,6 +1,6 @@
 <template>
   <div>
-
+<!-- 배너 -->
     <div v-if="bannerLoaded">
       <div class="banner">
         <carousel :per-page="1" :autoplay="true" :autoplay-timeout="3000" :loop="true" :paginationEnabled="false" :mouseDrag="false" :speed="2000">
@@ -16,33 +16,53 @@
             <div class="banner-overview">{{movie.overview}}</div>
           </div>
           <div class="button-group">
+
               <button type="button" class="like-btn btn" @click="like_movie(movie.id); clickSound();">
-                <span v-if="isLike"><i class="fa-regular fa-heart fa-beat fa-2xl" style="color: #b40000;"></i></span>
-                <span v-else><i class="fa-solid fa-heart fa-2xl" style="color: #b40000;"></i></span>
+                <span v-if="isLike">
+                  <i class="fa-regular fa-heart fa-beat fa-2xl" style="color: #b40000;"></i>
+                </span>
+                <span v-else>
+                  <i class="fa-solid fa-heart fa-2xl" style="color: #b40000;"></i>
+                </span>
+                <span class="like-animation" v-if="showHeartAnimation"><i class="fa-solid fa-heart fa-shake" style="color: #b40000; font-size:300px;" ></i></span>
                 <span style="color:white; margin-left:15px;">{{ likeCount }}</span>
               </button>
+
               <button type="button" class="save-btn btn" @click="later_movie(movie.id); clickSound();">
-                <span v-if="isLater"><i class="fa-solid fa-bookmark fa-2xl" style="color: #005eff;"></i></span>
-                <span v-else><i class="fa-regular fa-bookmark fa-2xl" style="color: #005eff;"></i></span>
+                <span v-if="isLater">
+                  <i class="fa-solid fa-bookmark fa-2xl" style="color: #005eff;"></i>
+                  </span>
+                <span v-else>
+                  <i class="fa-regular fa-bookmark fa-2xl" style="color: #005eff;"></i>
+                </span>
+                <span class="check-animation" v-if="showCheckAnimation"><i class="fa-solid fa-check" style="color: #00ff1e;"></i></span>
               </button>
+
             </div>
           </div>
       </div>
     </div>
 
 
-    <div v-else>
-      <i class="fa-solid fa-spinner fa-spin" style="color: #000000; font-size:100px;"></i>
+    <div v-else style="width:100%; background-color:black; margin-top:50x;" class="text-center">
+      <i class="fa-solid fa-spinner fa-2xl" style="color: #ffffff; font-size:100px"></i>
     </div>
 
+<!-- 디테일 뷰 -->
     <div class="detail-view">
+
       <br>
-      <br>
+      
       <div>
         <h1>Comments</h1>
         <h3>댓글</h3>
-        <textarea type="text" class="form-control input-field" v-model="content" @keyup.enter="createComment(movie.id); clickSound();"/>
-        <button type="button" class="btn save-btn" style="color: white; margin-top:15px" @click="createComment(movie.id); clickSound();">작성</button>
+        <div class="input-container">
+          <textarea type="text" class="form-control input-field" v-model="content" @keyup.enter="createComment(movie.id)" @click="clickSound();"></textarea>
+          <button type="button" class="btn save-btn" style="color: white; height:40px" @click="createComment(movie.id); clickSound();"><i class="fa-solid fa-turn-down fa-rotate-90" style="color: #ffffff; font-size:20px"></i></button>
+        </div>
+
+        <br>
+
         <ul>
           <li v-for="comment in comments" :key="comment.id" class="m-1">
             {{ comment.id }}
@@ -50,8 +70,8 @@
             <router-link :to="{ name: 'profile', params:{ username:comment.user.username } }" style="text-decoration: underline">
               {{ comment.user.username }}
             </router-link>
-            <button type="button" class="save-btn btn" @click="deleteComment(comment.id); clickSound();">
-              <i class="fa-solid fa-delete-left" style="color: #000000;"></i>
+            <button type="button" class="save-btn btn mx-3" @click="deleteComment(comment.id); clickSound();">
+              <i class="fa-solid fa-delete-left" style="color: #ffffff;"></i>
             </button>
             <hr>
           </li>
@@ -75,12 +95,13 @@ export default {
       movie: { title: null, overview: null },
       comments: [],
       content: "",
-      isMovieFetched: false, // 플래그 변수
       bannerLoaded : false,
       banners : [],
       isLike: false,
       likeCount: 0,
       isLater : false,
+      showHeartAnimation: false,
+      showCheckAnimation: false,
     }
   },
   computed: {
@@ -97,6 +118,7 @@ export default {
     this.fetchisLater(id);
   },
   mounted(){
+    
   },
   methods: {
     clickSound() {
@@ -115,7 +137,7 @@ export default {
       const apiKey = '8b1a427d0c951e52a5869304bde7a649';
       axios.get(`https://api.themoviedb.org/3/movie/${id}/images?api_key=${apiKey}`)
         .then(response => {
-          const backdrops = response.data.backdrops.slice(2,7); //
+          const backdrops = response.data.backdrops.slice(1,6); //
           this.banners = backdrops;
           this.bannerLoaded = true;
         })
@@ -130,7 +152,6 @@ export default {
         .get(url)
         .then((response) => {
           this.movie = response.data;
-          this.isMovieFetched = true;
         })
         .catch((error) => {
           console.log(error);
@@ -147,12 +168,6 @@ export default {
         });
     },
     deleteComment(comment_id) {
-      // const currentUserId = this.$store.state.user_id;
-
-      // // 찾고 있는 코멘트
-      // const commentToDelete = this.comments.find(comment => comment.id === comment_id);
-      // // 코멘트 작성자의 ID와 현재 사용자의 ID 비교
-      // if (commentToDelete.user_id === currentUserId) {
       axios
         .delete(
           `${this.$store.state.URL}/api/v1/comments/${comment_id}/${this.$store.state.username}/`,
@@ -200,7 +215,11 @@ export default {
       axios
         .get(`${this.$store.state.URL}/api/v1/movies/${movieId}/like/${this.$store.state.username}/`)
         .then((response) => {
-          this.isLike = response.data.islike === 'like';
+          if (response.data.islike === 'like') {
+            this.isLike = true
+          } else {
+            this.isLike = false
+          }
           this.likeCount = response.data.like_count;
         })
         .catch((error) => {
@@ -210,7 +229,13 @@ export default {
     async like_movie(movieId) {
       try { // 비동기처리(post이후 fetchLike 순차적 호출(에러 방지))
         await axios.post(`${this.$store.state.URL}/api/v1/movies/${movieId}/like/${this.$store.state.username}/`);
-        this.fetchLike(movieId);
+        await this.fetchLike(movieId);
+        if (this.isLike === false) {
+          this.showHeartAnimation = false
+        } else {
+          this.showHeartAnimation = true
+        }
+        
       } catch (error) {
         console.error('좋아요 처리 실패:', error);
       }
@@ -228,7 +253,12 @@ export default {
     async later_movie(movieId) {
       try { // 비동기처리(post이후 fetchisLater 순차적 호출(에러 방지))
         await axios.post(`${this.$store.state.URL}/api/v1/movies/${movieId}/watchlater/${this.$store.state.username}/`);
-        this.fetchisLater(movieId);
+        await this.fetchisLater(movieId);
+        if(this.isLater == false) {
+          this.showCheckAnimation = true
+        } else {
+          this.showCheckAnimation = false
+        }
       } catch (error) {
         console.error('좋아요 처리 실패:', error);
       }
@@ -240,7 +270,7 @@ export default {
 <style>
 .input-field {
   width: 600px; /* 원하는 너비로 조정하세요 */
-  height: 80px; /* 원하는 높이로 조정하세요 */
+  height: auto; /* 원하는 높이로 조정하세요 */
   resize: none; /* 세로 크기 조정을 허용합니다 */
 }
 .button-group {
@@ -251,15 +281,24 @@ export default {
   justify-content: flex-start;
   align-items: center;
 }
+.input-container {
+  display: flex;
+  align-items: center;
+}
+.input-field {
+  width: 600px;
+  height: 40px;
+  resize: none;
+}
 .like-btn,
 .save-btn{
-  background: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.2);
   margin-right: 10px;
 }
 .like-btn:hover,
 .save-btn:hover {
-  background: rgba(255,255,255,0.3);
-  box-shadow: 0px 5px 30px 5px rgba(255, 255, 255, 0.5);
+  background: rgba(255,255,255,0.2);
+  box-shadow: 0px 5px 30px 5px rgba(255, 255, 255, 1);
   border-radius: 5px;
 }
 .banner-img {
@@ -307,5 +346,63 @@ export default {
   overflow: hidden;
 }
 
+.like-animation {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  animation-name: likeAnimation;
+  animation-duration: 2s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
 
+@keyframes likeAnimation {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+.save-btn {
+  position: relative;
+}
+
+.check-animation {
+  position: absolute;
+  top: 10%;
+  left: 70%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  animation-name: checkAnimation;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
+
+@keyframes checkAnimation {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
 </style>

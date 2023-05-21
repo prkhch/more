@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-
+  <LaterView/>
   <nav>
     <div class="left-links">
       <div @click="playSound">
@@ -44,10 +44,14 @@
 <script>
 import Vue from 'vue';
 import VueCarousel from 'vue-carousel';
+import LaterView from '@/views/LaterView.vue'
 
 Vue.use(VueCarousel);
 
 export default {
+  components : {
+    LaterView
+  },
   data() {
     return {
       showSearch: false,

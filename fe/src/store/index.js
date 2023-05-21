@@ -81,6 +81,7 @@ export default new Vuex.Store({
       }
     },
     async logout(context) {
+      
       try {
         const response = await axios.post("http://localhost:8000/accounts/logout/")
         if(response.data) {
