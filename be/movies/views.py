@@ -7,7 +7,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .models import Movie, Comment
 from accounts.models import User
-from django.http import JsonResponse
+from django.contrib.auth import get_user_model
 
 
 @api_view(['GET'])
@@ -18,7 +18,7 @@ def movie_detail(request, movie_pk):
             movie = get_object_or_404(Movie, pk=movie_pk)
         except:
             movie_data = {
-                'id':movie_pk,
+                'id':movie_pk
             }
             movieserializer = MovieSerializer(data=movie_data)
             if movieserializer.is_valid(raise_exception=True):
@@ -104,3 +104,56 @@ def movie_like(request, movie_pk, username):
         return Response(response, status=status.HTTP_202_ACCEPTED)
     else:
         return Response(response, status=status.HTTP_403_FORBIDDEN)
+
+@api_view(['POST'])
+def modify_watch_later(request, movie_pk, username):
+    user = User.objects.get(username=username)
+    try:
+        movie = get_object_or_404(Movie, pk=movie_pk)
+    except:
+        movie_data = {
+            'id':movie_pk
+        }
+        movieserializer = MovieSerializer(data=movie_data)
+    if movieserializer.is_valid(raise_exception=True):
+        movieserializer.save()
+    if user.watchlater_movie.filter(pk=movie_pk).exists():
+        user.watchlater_movie.remove(movie_pk)
+        data = {'result':'remove'}
+        return Response(data, status=status.HTTP_200_OK)
+    else:
+        user.watchlater_movie.add(movie_pk)
+        data = {'result':'add'}
+        return Response(data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_watch_later(request, username):
+    user = User.objects.get(username=username)
+    watchlist = {
+        'result': []
+    }
+    for res in user.watchlater_movie.all():
+        watchlist['result'].append(res.pk)
+    return Response(watchlist, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def follow(request, profilename, username):
+    if profilename != username:
+        data = {
+            'result' : ''
+        }
+        profile = User.objects.get(username=profilename)
+        user = User.objects.get(username=username)
+        person = get_user_model().objects.get(pk=profile.id)
+        if person.followers.filter(pk=user.id).exists():
+            person.followers.remove(user.id)
+            data['result'] = 'unfollow'
+        else:
+            person.followers.add(user.id)
+            data['result'] = 'follow'
+        return Response(data, status=status.HTTP_200_OK)
+    else:
+        data = {
+            'result':'동일인'
+        }
+        return Response(data, status=status.HTTP_403_FORBIDDEN)
