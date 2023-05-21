@@ -4,7 +4,7 @@
   <nav>
     <div class="left-links">
       <div @click="playSound">
-        <router-link to="/">Home</router-link>
+        <router-link to="/"><img src="@/assets/logo.png" alt="logo" style="width:20px;"></router-link>
       </div>
       
       <div @click="playSound">
@@ -17,7 +17,7 @@
 
     <div class="right-links">
       <div v-if="hasToken" @click="playSound">
-        <router-link to="/profile">{{ $store.state.username }}</router-link>
+        <router-link :to="{ name: 'profile', params:{username:$store.state.username} }" style="text-decoration: underline">{{ $store.state.username }}</router-link>
       </div>
       <div v-if="hasToken" @click="playSound">
         <router-link to="/later">나중에 볼 영화</router-link>

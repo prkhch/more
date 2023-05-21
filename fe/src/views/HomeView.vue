@@ -136,4 +136,12 @@ export default {
   opacity: 0;
 }
 
+.card{
+  transition: box-shadow 1s;
+  box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0);
+}
+.card:hover{
+  box-shadow: 0px 5px 30px 5px rgba(255, 255, 255, 1);
+  border-radius: 5px;
+}
 </style>

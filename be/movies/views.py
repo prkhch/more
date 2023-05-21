@@ -18,7 +18,7 @@ def movie_detail(request, movie_pk):
             movie = get_object_or_404(Movie, pk=movie_pk)
         except:
             movie_data = {
-                'id':movie_pk
+                'id':movie_pk,
             }
             movieserializer = MovieSerializer(data=movie_data)
             if movieserializer.is_valid(raise_exception=True):
@@ -79,9 +79,9 @@ def comment_detail(request, comment_pk, username):
             }    
             return Response(data, status=status.HTTP_401_UNAUTHORIZED)
 
-@api_view(['POST'])
+@api_view(['GET','POST'])
 def movie_like(request, movie_pk, username):
-    response = {'islike':''}
+    response = {'islike':'', 'like_count' : 0}
     userid = User.objects.get(username=username)
     if request.method == 'POST':
         movie = get_object_or_404(Movie, pk=movie_pk)
@@ -93,5 +93,14 @@ def movie_like(request, movie_pk, username):
             movie.like.add(userid.id)
             response['islike'] = 'like'
         return Response(response, status=status.HTTP_200_OK)
+    elif request.method == 'GET' :
+        movie = get_object_or_404(Movie, pk=movie_pk)
+        response['like_count'] = movie.like.count()
+        existed = movie.like.filter(pk=userid.id).exists()
+        if existed:
+            response['islike'] = 'dislike'
+        else:
+            response['islike'] = 'like'  
+        return Response(response, status=status.HTTP_202_ACCEPTED)
     else:
         return Response(response, status=status.HTTP_403_FORBIDDEN)

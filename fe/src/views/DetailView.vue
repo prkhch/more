@@ -11,11 +11,21 @@
           </slide>
         </carousel>
         <div class="banner-overlay">
-        <div class="banner-title">
-          {{ movie.title }}
-          <div class="banner-overview">{{movie.overview}}</div>
-        </div>
-        </div>
+          <div class="banner-title">
+            {{ movie.title }}
+            <div class="banner-overview">{{movie.overview}}</div>
+          </div>
+          <div class="button-group">
+              <button type="button" class="like-btn btn" @click="like_movie(movie.id)">
+                <span v-if="isLike"><i class="fa-regular fa-heart fa-beat fa-2xl" style="color: #b40000;"></i></span>
+                <span v-else><i class="fa-solid fa-heart fa-2xl" style="color: #b40000;"></i></span>
+                <span style="color:white; margin-left:15px;">좋아요 {{ likeCount }}</span>
+              </button>
+              <button type="button" class="save-btn btn">
+                <i class="fa-regular fa-bookmark fa-2xl" style="color: #000000;"></i>
+              </button>
+            </div>
+          </div>
       </div>
     </div>
 
@@ -25,25 +35,24 @@
     </div>
 
     <div class="detail-view">
-      <!-- <h2>Movie Detail</h2>
-      <img v-if="isMovieFetched" :src="getImageUrl(movie.poster_path)" class="card-img-top border" style="width:300px; height:300px;" alt="...">
-      <div v-else><i class="fa-solid fa-spinner fa-spin" style="color: #000000; font-size:100px;"></i></div>
-      <div>{{ movie.title }}</div>
-      <div>{{ movie.overview }}</div> -->
       <br>
-      <button type="button" class="btn btn-primary" @click="like_movie(movie.id)">좋아요</button>
       <br>
       <div>
-        <h1>DetailComments</h1>
-        <h3>댓글 작성</h3>
-        <input type="text" class="form-control" v-model="content" @keyup.enter="createComment(movie.id)"/>
-        <button type="button" class="btn btn-primary" @click="createComment(movie.id)">댓글 추가</button>
+        <h1>Comments</h1>
+        <h3>댓글</h3>
+        <textarea type="text" class="form-control input-field" v-model="content" @keyup.enter="createComment(movie.id); clickSound();"/>
+        <button type="button" class="btn save-btn" style="color: white; margin-top:15px" @click="createComment(movie.id); clickSound();">작성</button>
         <ul>
-          <li v-for="comment in comments" :key="comment.id">
+          <li v-for="comment in comments" :key="comment.id" class="m-1">
             {{ comment.id }}
             {{ comment.content }}
-            {{ comment.user.username}}
-            <input type="submit" value="삭제" @click="deleteComment(comment.id)">
+            <router-link :to="{ name: 'profile', params:{ username:comment.user.username } }" style="text-decoration: underline">
+              {{ comment.user.username }}
+            </router-link>
+            <button type="button" class="save-btn btn" @click="deleteComment(comment.id); clickSound();">
+              <i class="fa-solid fa-delete-left" style="color: #000000;"></i>
+            </button>
+            <hr>
           </li>
         </ul>
       </div>
@@ -67,7 +76,9 @@ export default {
       content: "",
       isMovieFetched: false, // 플래그 변수
       bannerLoaded : false,
-      banners : []
+      banners : [],
+      isLike: false,
+      likeCount: 0,
     }
   },
   computed: {
@@ -77,13 +88,21 @@ export default {
   },
   created() {
     const id = this.$route.params.id; // id 파라미터 가져오기
+    this.getBannerUrl(id);
     this.fetchMovie(id);
     this.fetchComments(id);
-    this.getBannerUrl(id);
+    this.fetchLike(id);
   },
   mounted(){
   },
   methods: {
+    clickSound() {
+      var audio = new Audio(require('@/assets/click.mp3'));
+      audio.play()
+        .catch(error => {
+          console.error('소리를 재생할 수 없습니다:', error);
+        });
+    },
     getImageUrl(posterPath) {
       const baseUrl = 'https://image.tmdb.org/t/p/';
       const size = 'original';
@@ -93,7 +112,7 @@ export default {
       const apiKey = '8b1a427d0c951e52a5869304bde7a649';
       axios.get(`https://api.themoviedb.org/3/movie/${id}/images?api_key=${apiKey}`)
         .then(response => {
-          const backdrops = response.data.backdrops.slice(1, 10); // backdrops에서 이미지 5개를 가져옵니다
+          const backdrops = response.data.backdrops.slice(1,10); //
           this.banners = backdrops;
           this.bannerLoaded = true;
         })
@@ -174,24 +193,55 @@ export default {
         alert("작성할 댓글 내용을 입력하세요.")
       }
     },
-    like_movie(movieId) {
+    fetchLike(movieId) {
       axios
-        .post(
-          `${this.$store.state.URL}/api/v1/movies/${movieId}/like/${this.$store.state.username}/`
-        )
+        .get(`${this.$store.state.URL}/api/v1/movies/${movieId}/like/${this.$store.state.username}/`)
         .then((response) => {
-          if (response.data.islike === 'like') {
-            console.log('좋아요')
-          } else {
-            console.log('이제 안 좋아요')
-          }
+          this.isLike = response.data.islike === 'like';
+          this.likeCount = response.data.like_count;
         })
-    }
+        .catch((error) => {
+          console.error('좋아요 상태 가져오기 실패:', error);
+        });
+    },
+    async like_movie(movieId) {
+      this.clickSound();
+      try { // 비동기처리(post이후 fetchLike 순차적 호출(에러 방지))
+        await axios.post(`${this.$store.state.URL}/api/v1/movies/${movieId}/like/${this.$store.state.username}/`);
+        this.fetchLike(movieId);
+      } catch (error) {
+        console.error('좋아요 처리 실패:', error);
+      }
+    },
   },
 }
 </script>
 
 <style>
+.input-field {
+  width: 600px; /* 원하는 너비로 조정하세요 */
+  height: 80px; /* 원하는 높이로 조정하세요 */
+  resize: none; /* 세로 크기 조정을 허용합니다 */
+}
+.button-group {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.like-btn,
+.save-btn{
+  background: rgba(255,255,255,0.3);
+  margin-right: 10px;
+}
+.like-btn:hover,
+.save-btn:hover {
+  background: rgba(255,255,255,0.3);
+  box-shadow: 0px 5px 30px 5px rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+}
 .banner-img {
   height: 800px;
 }
@@ -228,7 +278,13 @@ export default {
   font-size: 20px;
   text-align: center;
   margin-top: 50px;
-  line-height: 2;
+  letter-spacing: 2px; /* 글자 간격 */
+  line-height: 2; /* 원하는 문장 높이 간격 설정 */
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 
