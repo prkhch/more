@@ -16,13 +16,14 @@
             <div class="banner-overview">{{movie.overview}}</div>
           </div>
           <div class="button-group">
-              <button type="button" class="like-btn btn" @click="like_movie(movie.id)">
+              <button type="button" class="like-btn btn" @click="like_movie(movie.id); clickSound();">
                 <span v-if="isLike"><i class="fa-regular fa-heart fa-beat fa-2xl" style="color: #b40000;"></i></span>
                 <span v-else><i class="fa-solid fa-heart fa-2xl" style="color: #b40000;"></i></span>
-                <span style="color:white; margin-left:15px;">좋아요 {{ likeCount }}</span>
+                <span style="color:white; margin-left:15px;">{{ likeCount }}</span>
               </button>
-              <button type="button" class="save-btn btn">
-                <i class="fa-regular fa-bookmark fa-2xl" style="color: #000000;"></i>
+              <button type="button" class="save-btn btn" @click="later_movie(movie.id); clickSound();">
+                <span v-if="isLater"><i class="fa-solid fa-bookmark fa-2xl" style="color: #005eff;"></i></span>
+                <span v-else><i class="fa-regular fa-bookmark fa-2xl" style="color: #005eff;"></i></span>
               </button>
             </div>
           </div>
@@ -79,6 +80,7 @@ export default {
       banners : [],
       isLike: false,
       likeCount: 0,
+      isLater : false,
     }
   },
   computed: {
@@ -92,6 +94,7 @@ export default {
     this.fetchMovie(id);
     this.fetchComments(id);
     this.fetchLike(id);
+    this.fetchisLater(id);
   },
   mounted(){
   },
@@ -112,7 +115,7 @@ export default {
       const apiKey = '8b1a427d0c951e52a5869304bde7a649';
       axios.get(`https://api.themoviedb.org/3/movie/${id}/images?api_key=${apiKey}`)
         .then(response => {
-          const backdrops = response.data.backdrops.slice(1,10); //
+          const backdrops = response.data.backdrops.slice(2,7); //
           this.banners = backdrops;
           this.bannerLoaded = true;
         })
@@ -205,10 +208,27 @@ export default {
         });
     },
     async like_movie(movieId) {
-      this.clickSound();
       try { // 비동기처리(post이후 fetchLike 순차적 호출(에러 방지))
         await axios.post(`${this.$store.state.URL}/api/v1/movies/${movieId}/like/${this.$store.state.username}/`);
         this.fetchLike(movieId);
+      } catch (error) {
+        console.error('좋아요 처리 실패:', error);
+      }
+    },
+    fetchisLater(movieId) {
+      axios
+        .get(`${this.$store.state.URL}/api/v1/movies/${movieId}/watchlater/${this.$store.state.username}/`)
+        .then((response) => {
+          this.isLater = response.data.islater; // true or false
+        })
+        .catch((error) => {
+          console.error('later표시 실패', error);
+        });
+    },
+    async later_movie(movieId) {
+      try { // 비동기처리(post이후 fetchisLater 순차적 호출(에러 방지))
+        await axios.post(`${this.$store.state.URL}/api/v1/movies/${movieId}/watchlater/${this.$store.state.username}/`);
+        this.fetchisLater(movieId);
       } catch (error) {
         console.error('좋아요 처리 실패:', error);
       }

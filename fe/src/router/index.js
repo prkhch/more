@@ -42,7 +42,7 @@ const routes = [
     component : ProfileView
   },
   {
-    path: '/later',
+    path: '/later/:username',
     name : 'later',
     component : LaterView
   },

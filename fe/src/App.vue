@@ -20,7 +20,7 @@
         <router-link :to="{ name: 'profile', params:{username:$store.state.username} }" style="text-decoration: underline">{{ $store.state.username }}</router-link>
       </div>
       <div v-if="hasToken" @click="playSound">
-        <router-link to="/later">나중에 볼 영화</router-link>
+        <router-link :to="{ name: 'later', params:{username:$store.state.username} }">나중에 볼 영화</router-link>
       </div>
       <div v-if="hasToken" @click="playSound">
         <button @click="logout">로그아웃</button>
@@ -78,6 +78,10 @@ export default {
 #app {
   font-family: "Noto Sans KR", sans-serif;
 }
+body{
+  background-color: black;
+}
+
 ul {
   padding-left : 0;
   list-style : none;

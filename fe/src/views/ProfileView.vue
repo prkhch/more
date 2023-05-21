@@ -5,6 +5,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'ProfileView',
 
@@ -16,5 +17,8 @@ export default {
   created() {
 
   },
+  methods : {
+
+  }
 }
 </script>

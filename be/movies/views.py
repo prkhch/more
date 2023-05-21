@@ -105,7 +105,7 @@ def movie_like(request, movie_pk, username):
     else:
         return Response(response, status=status.HTTP_403_FORBIDDEN)
 
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 def modify_watch_later(request, movie_pk, username):
     user = User.objects.get(username=username)
     try:
@@ -115,16 +115,35 @@ def modify_watch_later(request, movie_pk, username):
             'id':movie_pk
         }
         movieserializer = MovieSerializer(data=movie_data)
-    if movieserializer.is_valid(raise_exception=True):
-        movieserializer.save()
-    if user.watchlater_movie.filter(pk=movie_pk).exists():
-        user.watchlater_movie.remove(movie_pk)
-        data = {'result':'remove'}
-        return Response(data, status=status.HTTP_200_OK)
-    else:
-        user.watchlater_movie.add(movie_pk)
-        data = {'result':'add'}
-        return Response(data, status=status.HTTP_200_OK)
+        if movieserializer.is_valid(raise_exception=True):
+            movieserializer.save()
+    
+    if request.method == 'GET':
+        response = {'islater' : False}
+        for movie in user.watchlater_movie.all():
+            if movie.pk == movie_pk : # 같은 영화 만나면 return true
+                response['islater'] = True
+                return Response(response, status=status.HTTP_200_OK)
+        return Response(response, status=status.HTTP_200_OK)
+
+    elif request.method == 'POST':
+        if user.watchlater_movie.filter(pk=movie_pk).exists():
+            user.watchlater_movie.remove(movie_pk)
+            data = {'result': 'remove'}
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            user.watchlater_movie.add(movie_pk)
+            data = {'result': 'add'}
+            return Response(data, status=status.HTTP_200_OK)           
+    
+    # if user.watchlater_movie.filter(pk=movie_pk).exists():
+    #     user.watchlater_movie.remove(movie_pk)
+    #     data = {'result':'remove'}
+    #     return Response(data, status=status.HTTP_200_OK)
+    # else:
+    #     user.watchlater_movie.add(movie_pk)
+    #     data = {'result':'add'}
+    #     return Response(data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def get_watch_later(request, username):
