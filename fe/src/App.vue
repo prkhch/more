@@ -45,7 +45,9 @@
 import Vue from 'vue';
 import VueCarousel from 'vue-carousel';
 import LaterView from '@/views/LaterView.vue'
+import VueLazyload from 'vue-lazyload';
 
+Vue.use(VueLazyload);
 Vue.use(VueCarousel);
 
 export default {

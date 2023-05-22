@@ -19,10 +19,10 @@
 
               <button type="button" class="like-btn btn" @click="like_movie(movie.id); clickSound();">
                 <span v-if="isLike">
-                  <i class="fa-regular fa-heart fa-beat fa-2xl" style="color: #b40000;"></i>
+                  <i class="fa-solid fa-heart fa-2xl" style="color: #b40000;"></i>
                 </span>
                 <span v-else>
-                  <i class="fa-solid fa-heart fa-2xl" style="color: #b40000;"></i>
+                  <i class="fa-regular fa-heart fa-beat fa-2xl" style="color: #b40000;"></i>
                 </span>
                 <span class="like-animation" v-if="showHeartAnimation"><i class="fa-solid fa-heart fa-shake" style="color: #b40000; font-size:300px;" ></i></span>
                 <span style="color:white; margin-left:15px;">{{ likeCount }}</span>
@@ -219,9 +219,9 @@ export default {
       try {
         const response = await axios.get(`${this.$store.state.URL}/api/v1/movies/${movieId}/like/${this.$store.state.username}/`);
         if (response.data.islike === 'like') {
-          this.isLike = true;
-        } else {
           this.isLike = false;
+        } else {
+          this.isLike = true;
         }
         this.likeCount = response.data.like_count;
         // 데이터를 받은 후 요청을 보내는 로직을 추가로 작성
