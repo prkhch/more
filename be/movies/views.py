@@ -1,10 +1,9 @@
-from django.shortcuts import get_list_or_404, get_object_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from .serializers.movie import MovieSerializer
 from .serializers.comment import CommentSerializer, CommetListSerializer, CommentCreateSerializer
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
 from .models import Movie, Comment
 from accounts.models import User
 from django.contrib.auth import get_user_model
@@ -12,7 +11,6 @@ import requests
 
 
 @api_view(['GET'])
-# @permission_classes(['IsAuthenticated'])
 def movie_detail(request, movie_pk):
     # TMDB API 설정
     api_key = '8b1a427d0c951e52a5869304bde7a649'
@@ -57,7 +55,6 @@ def movie_detail(request, movie_pk):
             return Response(data, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
-# @permission_classes(['IsAuthenticated'])
 def comment_create(request, movie_pk, username):
     movie = get_object_or_404(Movie, pk=movie_pk)
     userid = User.objects.get(username=username)
@@ -70,23 +67,21 @@ def comment_create(request, movie_pk, username):
 
 
 @api_view(['PUT', 'DELETE'])
-# @permission_classes(['IsAuthenticated'])
 def comment_detail(request, comment_pk, username):
     comment = get_object_or_404(Comment, pk=comment_pk)
     userid = User.objects.get(username=username)
     if request.method == 'PUT':
-        # if request.user == comment.user:
+        if userid.id == comment.user_id:
             serializer = CommentCreateSerializer(comment, data=request.data)
-            print(serializer)
             if serializer.is_valid(raise_exception=True):
-                serializer.save(user=request.user)
+                serializer.save()
                 return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-        # else:
-        #     data = {
-        #         'update':False,
-        #         'description': '로그인한 유저가 작성한 글이 아닙니다.'
-        #     }    
-        #     return Response(data, status=status.HTTP_401_UNAUTHORIZED)
+        else:
+            data = {
+                'update':False,
+                'description': '로그인한 유저가 작성한 글이 아닙니다.'
+            }    
+            return Response(data, status=status.HTTP_401_UNAUTHORIZED)
     elif request.method == 'DELETE':
         if userid.id == comment.user_id:
             comment.delete()
@@ -157,15 +152,6 @@ def modify_watch_later(request, movie_pk, username):
             user.watchlater_movie.add(movie_pk)
             data = {'result': 'add'}
             return Response(data, status=status.HTTP_200_OK)           
-    
-    # if user.watchlater_movie.filter(pk=movie_pk).exists():
-    #     user.watchlater_movie.remove(movie_pk)
-    #     data = {'result':'remove'}
-    #     return Response(data, status=status.HTTP_200_OK)
-    # else:
-    #     user.watchlater_movie.add(movie_pk)
-    #     data = {'result':'add'}
-    #     return Response(data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def get_watch_later(request, username):
