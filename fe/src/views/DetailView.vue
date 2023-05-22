@@ -66,13 +66,28 @@
         <ul>
           <li v-for="comment in comments" :key="comment.id" class="m-1">
             {{ comment.id }}
-            {{ comment.content }}
+            
             <router-link :to="{ name: 'profile', params:{ username:comment.user.username } }" style="text-decoration: underline">
               {{ comment.user.username }}
             </router-link>
-            <button type="button" class="save-btn btn mx-3" @click="deleteComment(comment.id); clickSound();">
-              <i class="fa-solid fa-delete-left" style="color: #ffffff;"></i>
-            </button>
+            
+            <div v-if="comment.editing">
+              <textarea type="text" class="form-control input-field" v-model="comment.editcontent" @keyup.enter="modifyComment(comment);" @click="clickSound();"></textarea>
+              <button type="button" class="btn save-btn" style="color: white; height:40px" @click="modifyComment(comment); clickSound();"><i class="fa-solid fa-turn-down fa-rotate-90" style="color: #ffffff; font-size:20px"></i></button>
+              <button type="button" class="save-btn btn mx-3" @click="cancelEdit(comment); clickSound();">
+                <i class="fa-solid" style="color: #ffffff;">취소</i>
+              </button>
+            </div>
+            <div v-else>
+              {{ comment.content }}
+              <button type="button" class="save-btn btn mx-3" @click="startEdit(comment); clickSound();">
+                <i class="fa-solid" style="color: #ffffff;">수정</i>
+              </button>
+              <button type="button" class="save-btn btn mx-3" @click="deleteComment(comment.id); clickSound();">
+                <i class="fa-solid fa-delete-left" style="color: #ffffff;"></i>
+              </button>
+            </div>
+
             <hr>
           </li>
         </ul>
@@ -102,6 +117,8 @@ export default {
       isLater : false,
       showHeartAnimation: false,
       showCheckAnimation: false,
+      editcontent : "",
+      editing : false,
     }
   },
   computed: {
@@ -179,6 +196,43 @@ export default {
         .then(() => {
           const updatedComments = this.comments.filter(comment => comment.id !== comment_id);
           this.comments = updatedComments;
+        })
+        .catch((error) => {
+          console.log(error);
+          if (error.response.status === 401) {
+            if (this.$store.state.token === null) {
+              alert("로그인 후 이용하세요.")
+            } else {
+              alert("로그인한 유저가 작성한 글이 아닙니다.")
+            }
+          }
+        })
+      // }
+    },
+    startEdit(comment) {
+      if (comment.user.username === this.$store.state.username) {
+        this.$set(comment, 'editing', true);
+        comment.editcontent = comment.content;
+      } else {
+        alert("로그인한 유저가 작성한 글이 아닙니다.")
+      }      
+    },
+    // 댓글 수정 취소
+    cancelEdit(comment) {
+      comment.editing = false;
+    },
+    modifyComment(comment) {
+      const updatedContent = comment.editcontent
+      axios
+        .put(
+          `${this.$store.state.URL}/api/v1/comments/${comment.id}/${this.$store.state.username}/`,
+          { content: comment.editcontent },
+          { headers: { Authorization: `Token ${this.$store.state.token}` } }
+        )
+        .then(() => {
+          comment.content = updatedContent
+          comment.editing = false
+          alert('댓글 수정이 완료되었습니다.')
         })
         .catch((error) => {
           console.log(error);
