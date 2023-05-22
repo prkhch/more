@@ -8,22 +8,44 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Movie, Comment
 from accounts.models import User
 from django.contrib.auth import get_user_model
+import requests
 
 
 @api_view(['GET'])
 # @permission_classes(['IsAuthenticated'])
 def movie_detail(request, movie_pk):
+    # TMDB API 설정
+    api_key = '8b1a427d0c951e52a5869304bde7a649'
+    base_url = 'https://api.themoviedb.org/3/movie'
+    language = 'ko-KR'
+
+    # API 호출을 위한 URL 생성
+    url = f'{base_url}/{movie_pk}?api_key={api_key}&language={language}'
+    print(url)
+
     if request.method == 'GET':
         try:
             movie = get_object_or_404(Movie, pk=movie_pk)
         except:
+            response = requests.get(url)
+            data = response.json()
+
+            # 영화 정보 추출
+            title = data['title']
+            poster_path = data['poster_path']
+
             movie_data = {
-                'id':movie_pk
+                'id':movie_pk,
+                'title':title,
+                'poster_path':poster_path,
             }
-            movieserializer = MovieSerializer(data=movie_data)
-            if movieserializer.is_valid(raise_exception=True):
-                movieserializer.save()
-                movie = get_object_or_404(Movie, pk=movie_pk)
+
+            # 영화 정보 저장
+            movie = Movie.objects.create(id=movie_pk, title=title, poster_path=poster_path)
+            serializer = MovieSerializer(movie)
+            serializer.is_valid()
+            serializer.save()  # 시리얼라이저를 저장
+
         try:
             comment = Comment.objects.filter(movie = movie_pk)
             serializer = CommetListSerializer(comment, many=True)

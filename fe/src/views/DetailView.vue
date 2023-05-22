@@ -111,14 +111,16 @@ export default {
   },
   created() {
     const id = this.$route.params.id; // id 파라미터 가져오기
-    this.getBannerUrl(id);
-    this.fetchMovie(id);
-    this.fetchComments(id);
     this.fetchLike(id);
     this.fetchisLater(id);
+    this.fetchMovie(id);
+    this.fetchComments(id);
   },
-  mounted(){
-    
+  async mounted(){
+    const id = this.$route.params.id; // id 파라미터 가져오기
+    await this.fetchLike(id);
+    await this.fetchisLater(id);
+    await this.getBannerUrl(id);
   },
   methods: {
     clickSound() {
@@ -143,6 +145,7 @@ export default {
         })
         .catch(error => {
           console.error(error);
+          this.getBannerUrl(id);
         });
     },
     fetchMovie(id) {
@@ -198,33 +201,35 @@ export default {
           )
           .then(() => {
             this.fetchComments(movieId)
+            this.content = "";
           })
           .catch((error) => {
             console.log(error);
-            if (error.response.status === 404) {
+            if(error.response.status === 400) {
+              alert("작성할 수 없습니다.")
+            } else {
               alert("로그인 후 이용하세요.")
             }
           })
-
-        this.content = "";
       } else {
         alert("작성할 댓글 내용을 입력하세요.")
       }
     },
-    fetchLike(movieId) {
-      axios
-        .get(`${this.$store.state.URL}/api/v1/movies/${movieId}/like/${this.$store.state.username}/`)
-        .then((response) => {
-          if (response.data.islike === 'like') {
-            this.isLike = true
-          } else {
-            this.isLike = false
-          }
-          this.likeCount = response.data.like_count;
-        })
-        .catch((error) => {
-          console.error('좋아요 상태 가져오기 실패:', error);
-        });
+    async fetchLike(movieId) {
+      try {
+        const response = await axios.get(`${this.$store.state.URL}/api/v1/movies/${movieId}/like/${this.$store.state.username}/`);
+        if (response.data.islike === 'like') {
+          this.isLike = true;
+        } else {
+          this.isLike = false;
+        }
+        this.likeCount = response.data.like_count;
+        // 데이터를 받은 후 요청을 보내는 로직을 추가로 작성
+        // 요청을 보내는 코드를 이곳에 작성
+      } catch (error) {
+        console.error('좋아요 상태 가져오기 실패:', error);
+        this.fetchLike(movieId);
+      }
     },
     async like_movie(movieId) {
       try { // 비동기처리(post이후 fetchLike 순차적 호출(에러 방지))
@@ -237,7 +242,7 @@ export default {
         }
         
       } catch (error) {
-        console.error('좋아요 처리 실패:', error);
+        alert("로그인 후 이용하세요.")
       }
     },
     fetchisLater(movieId) {
@@ -248,19 +253,21 @@ export default {
         })
         .catch((error) => {
           console.error('later표시 실패', error);
+          this.fetchisLater(movieId);
         });
     },
     async later_movie(movieId) {
-      try { // 비동기처리(post이후 fetchisLater 순차적 호출(에러 방지))
+      try {
         await axios.post(`${this.$store.state.URL}/api/v1/movies/${movieId}/watchlater/${this.$store.state.username}/`);
+        await this.$store.dispatch('fetchLaterview', this.$store.state.username);
         await this.fetchisLater(movieId);
-        if(this.isLater == false) {
-          this.showCheckAnimation = true
+        if (this.isLater === false) {
+          this.showCheckAnimation = true;
         } else {
-          this.showCheckAnimation = false
+          this.showCheckAnimation = false;
         }
       } catch (error) {
-        console.error('좋아요 처리 실패:', error);
+        console.error('저장 처리 실패:', error);
       }
     },
   },

@@ -14,6 +14,7 @@ export default new Vuex.Store({
     username: null,
     token: null,
     URL: "http://localhost:8000", // 백엔드
+    laterview : []
   },
   getters: {
     isLogin(state) {
@@ -32,7 +33,11 @@ export default new Vuex.Store({
     CLEAR_AUTH(state) {
       state.token = null;
       state.username = null;
+      state.laterview = [];
       router.push({ name: 'login' }); // 로그인 페이지로 이동
+    },
+    SET_LATERVIEW(state, laterview) {
+      state.laterview = laterview;
     },
   },
   actions: {
@@ -67,11 +72,10 @@ export default new Vuex.Store({
           username : username,
           password : password,
         });
-        console.log(response)
         if (response.data) {
-          console.log(response.data);
           context.commit('SAVE_TOKEN', response.data.key)
-          context.commit("SAVE_USERNAME", username);
+          await context.commit("SAVE_USERNAME", username);
+          await context.dispatch('fetchLaterview', username);
         } 
       } catch (error) {
         console.log(error);
@@ -85,11 +89,19 @@ export default new Vuex.Store({
       try {
         const response = await axios.post("http://localhost:8000/accounts/logout/")
         if(response.data) {
-          console.log(response.data)
           context.commit('CLEAR_AUTH');
         }
       } catch(error) {
         console.log(error)
+      }
+    },
+    async fetchLaterview(context, username) {
+      try {
+        const response = await axios.get(`http://localhost:8000/api/v1/movies/watchlater/${username}`); // 예시 API 엔드포인트
+        const laterview = response.data.result; // 예시 API 응답에서 laterview 데이터 추출
+        context.commit('SET_LATERVIEW', laterview); //
+      } catch (error) {
+        console.log(error);
       }
     },
 

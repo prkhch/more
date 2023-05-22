@@ -4,6 +4,9 @@ from django.conf import settings
 # Create your models here.
 class Movie(models.Model):
     id = models.IntegerField(primary_key=True)
+    title = models.CharField(max_length=100)
+    poster_path = models.URLField()
+
     like = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_movies')
     watchlater = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='watchlater_movie')
 
