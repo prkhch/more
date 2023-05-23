@@ -167,12 +167,21 @@
         </li>
         <li v-else v-for="movie in displayedMovies" :key="movie.id" class="movie-li" @click="navigateToDetailPage(movie.id)">
           <img :src="movie.poster_path" style="width:150px; height:150px;"  class="margin-auto" alt="...">
-          <div style="font-size:16px; color:white" class="text-center">{{movie.title}}</div>
+          <div style="font-size:16px; color:white;" class="text-center">{{movie.title}}</div>
         </li>
 
         <div style="display: flex; justify-content: space-around;">
-          <span style="color:white; cursor: pointer;" @click="previousPage" v-if="currentPage &gt; 1">이전</span>
-          <span style="color:white; cursor: pointer;" @click="nextPage" v-if="currentPage &lt; totalPages">다음</span>
+          <span class="btn">
+            <p style="color:white; cursor: pointer;" @click="previousPage" v-if="currentPage &gt; 1">이전</p>
+            <p class="disabled-link" v-else>이전</p>
+          </span>
+          <span class="btn">
+            <p style="color:white; cursor: pointer;" @click="nextPage" v-if="currentPage &lt; totalPages">다음</p>
+            <p class="disabled-link" v-else>다음</p>
+          </span>
+        </div>
+        <div>
+            <span style="color:white">{{this.currentPage}} / {{this.totalPages}}</span>
         </div>
       </ul>
 
@@ -207,7 +216,7 @@ export default {
       deep: true,
     },
   },
-   computed: {
+  computed: {
     totalPages() {
       return Math.ceil(this.movies.length / this.itemsPerPage); // 전체 페이지 수 계산
     },
@@ -313,6 +322,11 @@ export default {
 </script>
 
 <style>
+.disabled-link {
+    color: gray; /* 비활성화된 링크의 색상을 지정합니다. */
+    cursor: not-allowed; /* 비활성화된 링크에 마우스 커서를 지정합니다. */
+  }
+
 .movie-li {
   cursor: pointer;
 }
@@ -357,7 +371,7 @@ export default {
   outline: none;
   position: relative;
   width: 50px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 1), rgba(255, 255, 255, 0));
+  background: rgba(255,255,255,0.2)
 }
 .dropdownbtn:hover{
   background-color: rgba(255, 255, 255, 0.5);

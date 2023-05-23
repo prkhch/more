@@ -3,28 +3,36 @@
   <LaterView/>
   <nav>
     <div class="left-links">
-      <div @click="playSound">
+      <div @click="playSound" class="custom-btn btn-3">
+        <span>
         <router-link to="/"><img src="@/assets/logo.png" alt="logo" style="width:20px;"></router-link>
+        </span>
       </div>
       
-      <div @click="playSound">
+      <div @click="playSound" class="custom-btn btn-3">
+        <span>
         <router-link to="/search">
         <i class="fa-solid fa-magnifying-glass" style="color: #FFFFFF;"></i>
         </router-link>
+        </span>
       </div>
       
     </div>
 
     <div class="right-links">
-      <div v-if="hasToken" @click="playSound">
-        <router-link :to="{ name: 'profile', params:{username:$store.state.username} }" style="text-decoration: underline">{{ $store.state.username }}</router-link>
+      <div v-if="hasToken" @click="playSound" class="custom-btn btn-3"><span>
+        <router-link :to="{ name: 'profile', params:{username:$store.state.username} }" style="text-decoration: underline;color:white;">{{ $store.state.username }}</router-link></span>
       </div>
-      <div v-if="hasToken" @click="playSound">
-        <button @click="logout">로그아웃</button>
+      <div v-if="hasToken" @click="playSound" >
+        <button class="custom-btn btn-3" @click="logout"><span>로그아웃</span></button>
       </div>
       <div v-else @click="playSound">
-        <router-link to="/login">로그인</router-link>
-        <router-link to="/signup">회원가입</router-link>
+        <div class="custom-btn btn-3">
+        <router-link to="/login" style="text-decoration:none; color:white;"><span>로그인</span></router-link>
+        </div>
+        <div class="custom-btn btn-3">
+        <router-link to="/signup" style="text-decoration:none; color:white;"><span>회원가입</span></router-link>
+        </div>
       </div>
   
     </div>
@@ -109,34 +117,86 @@ nav {
   background-color: rgba(0,0,0,1);
 }
 
-.left-links {
-  display: flex;
-  align-items: center;
-}
+.left-links,
 .right-links {
   display: flex;
   align-items: center;
 }
-.left-links a,
-.right-links a,
-.right-links button {
-  margin: 0 10px;
-  padding: 5px 10px;
-  background-color: black;
-  color: white;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  transition: box-shadow 0.3s;
-  box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0);
 
+.custom-btn {
+  background: transparent;
+  cursor: pointer;
+  transition: all 1s ease;
+  position: relative;
+  display: inline-block;
+  /* box-shadow: 0px 0px 100px 1px rgba(255,255,255,1); */
 }
-.left-links a:hover,
-.right-links a:hover,
-.right-links button:hover {
-  box-shadow: 0px 2px 5px 2px rgba(255, 255, 255, 0.4);
+
+.btn-3 {
   border-radius: 5px;
+}
+
+.btn-3 {
+  /* background: rgba(255, 255, 255, 0.2); */
+  width: auto;
+  height: auto;
+  color: white;
+  margin: 5px 10px;
+  padding: 5px 10px;
+  border: none;
+}
+
+.btn-3:before,
+.btn-3:after {
+  position: absolute;
+  content: "";
+  right: 0;
+  top: 0;
+  background: rgb(255, 255, 255);
+  transition: all 1s ease;
+}
+.btn-3:before {
+  height: 0%;
+  width: 2px;
+}
+.btn-3:after {
+  width: 0%;
+  height: 2px;
+}
+.btn-3:hover{
+  background: transparent;
+}
+.btn-3:hover:before {
+  height: 100%;
+}
+.btn-3:hover:after {
+  width: 100%;
+}
+.btn-3 span:hover{
+  background: transparent;
+}
+.btn-3 span:before,
+.btn-3 span:after {
+  position: absolute;
+  content: "";
+  left: 0;
+  bottom: 0;
+  background: white;
+  transition: all 1s ease;
+}
+.btn-3 span:before {
+  width: 2px;
+  height: 0%;
+}
+.btn-3 span:after {
+  width: 0%;
+  height: 2px;
+}
+.btn-3 span:hover:before {
+  height: 100%;
+}
+.btn-3 span:hover:after {
+  width: 100%;
 }
 
 
