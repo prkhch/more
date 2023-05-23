@@ -1,8 +1,8 @@
 from .views import ChangePasswordView
-from django.urls import path, include
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('profile/<str:username>/', views.profile),
-    path('change_password/<int:pk>/', ChangePasswordView.as_view(), name='auth_change_password'),
+    path('profiles/<str:username>/', views.profile, name='profile'),
+    path('profiles/<str:username>/change-password/', ChangePasswordView.as_view(), name='change_password'),
 ]

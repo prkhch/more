@@ -167,7 +167,9 @@ def get_watch_later(request, username):
 def follow(request, profilename, username):
     if profilename != username:
         data = {
-            'result' : ''
+            'result' : '',
+            'is_following': False,
+            'followers': []
         }
         profile = User.objects.get(username=profilename)
         user = User.objects.get(username=username)
@@ -178,9 +180,13 @@ def follow(request, profilename, username):
         else:
             person.followers.add(user.id)
             data['result'] = 'follow'
+        data['is_following'] = person.followers.filter(pk=user.id).exists()
+        data['followers'] = list(person.followers.values('id',))
         return Response(data, status=status.HTTP_200_OK)
     else:
         data = {
-            'result':'동일인'
+            'result':'동일인',
+            'is_following': False,
+            'followers': []
         }
         return Response(data, status=status.HTTP_403_FORBIDDEN)

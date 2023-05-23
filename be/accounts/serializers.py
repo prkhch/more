@@ -4,15 +4,15 @@ from .models import User
 from django.contrib.auth.password_validation import validate_password
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_image = serializers.ImageField()
     class Meta:
         model = get_user_model()
-        # fields = '__all__'
-        fields = ('id', 'username', 'first_name', 'last_name', 'email','last_login', 'date_joined', 'followings', 'followers',)
+        fields = ('id', 'username', 'profile_image', 'first_name', 'last_name', 'email', 'last_login', 'date_joined', 'followings', 'followers')
 
 class ModifyProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ('first_name', 'last_name', 'email',)
+        fields = ('first_name', 'last_name', 'email', 'profile_image',)
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
