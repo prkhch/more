@@ -20,9 +20,6 @@
         <router-link :to="{ name: 'profile', params:{username:$store.state.username} }" style="text-decoration: underline">{{ $store.state.username }}</router-link>
       </div>
       <div v-if="hasToken" @click="playSound">
-        <router-link :to="{ name: 'later', params:{username:$store.state.username} }">나중에 볼 영화</router-link>
-      </div>
-      <div v-if="hasToken" @click="playSound">
         <button @click="logout">로그아웃</button>
       </div>
       <div v-else @click="playSound">

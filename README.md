@@ -14,6 +14,20 @@ img
 
 - 박희창,최찬석
 
+- ## DAY-7
+
+FE
+
+- 나중에 볼 영화(저장, store.state를 이용하여 모든 url에서 호출 가능)
+- 댓글 수정
+- 프로필
+
+BE
+
+- 프로필 이미지
+
+<img title="" src="history/day7.png" alt="">
+
 - ## DAY-6
 
 FE
