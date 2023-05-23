@@ -1,6 +1,8 @@
 <template>
-  <div class="later-view">
-    <div class="dropdown dropstart" style="position: fixed; right: 1.5%; top: 10%; transform: translateY(-50%); z-index: 999;">
+  <div class="later-view" style="position: absolute; top: 38px; right: 200px;">
+
+    <vue-draggable-resizable style=" z-index: 999; border:none;" :w="1" :h="1" :handles=[]> 
+    <div class="dropdown dropstart" style="transform: translateY(-50%);"  >
       <button class="btn dropdown dropdownbtn" @click="toggleMenu" type="button" id="menu-toggle" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">
         <svg height="50" width="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
           <g id="open-cubes">
@@ -186,10 +188,9 @@
       </ul>
 
     </div>
+    </vue-draggable-resizable>
 
   </div>
-
-
 </template>
 
 <script>
@@ -322,6 +323,10 @@ export default {
 </script>
 
 <style>
+.vdr {
+  border : none;
+}
+
 .disabled-link {
     color: gray; /* 비활성화된 링크의 색상을 지정합니다. */
     cursor: not-allowed; /* 비활성화된 링크에 마우스 커서를 지정합니다. */
@@ -364,14 +369,14 @@ export default {
   appearance: none;
   -moz-appearance: none;
   -webkit-appearance: none;
-  border: none;
+  /* border: 2px black solid; */
   border-radius: 50px;
   cursor: pointer;
   height: 50px;
   outline: none;
   position: relative;
   width: 50px;
-  background: rgba(255,255,255,0.2)
+  background: rgba(255,255,255,0.4)
 }
 .dropdownbtn:hover{
   background-color: rgba(255, 255, 255, 0.5);

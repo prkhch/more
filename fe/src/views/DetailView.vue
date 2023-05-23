@@ -38,6 +38,10 @@
                 <span class="check-animation" v-if="showCheckAnimation"><i class="fa-solid fa-check" style="color: #00ff1e;"></i></span>
               </button>
 
+              <button>
+                <a :href="this.youtubeUrl" target='_blank'><img src="@/assets/yt_logo_rgb_light.png" alt="" style="width:auto; height:30px;" class="ytb-btn"></a>
+              </button>
+
             </div>
           </div>
       </div>
@@ -152,6 +156,7 @@ export default {
       showCheckAnimation: false,
       editcontent : "",
       editing : false,
+      youtubeUrl : ""
     }
   },
   computed: {
@@ -165,6 +170,7 @@ export default {
     this.fetchisLater(id);
     this.fetchMovie(id);
     this.fetchComments(id);
+    this.getYoutubeUrl(id);
   },
   async mounted(){
     const id = this.$route.params.id; // id 파라미터 가져오기
@@ -173,6 +179,30 @@ export default {
     await this.getBannerUrl(id);
   },
   methods: {
+    async getYoutubeUrl(id) {
+      const apiKey = '8b1a427d0c951e52a5869304bde7a649';
+      const videoUrl = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${apiKey}&language=ko-KR`
+      try {
+          const response = await fetch(videoUrl);
+          const data = await response.json();
+
+          if (data.results && data.results.length > 0) {
+            const firstVideo = data.results[9];
+            if(firstVideo.length < 1) {
+              const secondVideo = data.results[0];
+              this.youtubeUrl = `https://www.youtube.com/watch?v=${secondVideo.key}`;
+            } else {
+              this.youtubeUrl = `https://www.youtube.com/watch?v=${firstVideo.key}`;
+            }
+            console.log(this.youtubeUrl)
+          } else {
+            return null; // 만약 영상이 없는 경우 null을 반환하거나 다른 처리를 수행할 수 있습니다.
+          }
+        } catch (error) {
+          console.log(error);
+          return null;
+        }
+    },
     clickSound() {
       var audio = new Audio(require('@/assets/click.mp3'));
       audio.play()
@@ -404,13 +434,16 @@ export default {
 .like-btn,
 .save-btn{
   background: rgba(255,255,255,0.2);
+  border-radius: 50px;
   margin-right: 10px;
 }
-.like-btn:hover,
+.like-btn:hover {
+  border-radius: 50px;
+  background: rgba(255,255,255,0.4);
+}
 .save-btn:hover {
-  background: rgba(255,255,255,0.2);
-  box-shadow: 0px 5px 30px 5px rgba(255, 255, 255, 1);
-  border-radius: 5px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.4);
 }
 .banner-img {
   height: 800px;

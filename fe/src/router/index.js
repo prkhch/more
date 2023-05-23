@@ -7,6 +7,7 @@ import LoginView from "@/views/LoginView.vue"
 import SearchView from "@/views/SearchView.vue"
 import ProfileView from "@/views/ProfileView.vue"
 import LaterView from "@/views/LaterView.vue"
+import TestView from "@/views/TestView.vue"
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,11 @@ const routes = [
     path: '/later/:username',
     name : 'later',
     component : LaterView
+  },
+  {
+    path: '/test',
+    name : 'test',
+    component : TestView
   },
 
 ]

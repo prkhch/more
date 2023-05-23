@@ -50,7 +50,10 @@
 import Vue from 'vue';
 import VueCarousel from 'vue-carousel';
 import LaterView from '@/views/LaterView.vue'
+import VueDraggableResizable from 'vue-draggable-resizable'
+import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
 
+Vue.component('vue-draggable-resizable', VueDraggableResizable)
 Vue.use(VueCarousel);
 
 export default {

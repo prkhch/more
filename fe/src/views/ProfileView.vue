@@ -183,9 +183,8 @@ export default {
 }
 
 .save-btn:hover {
-  background: rgba(255,255,255,0.2);
-  box-shadow: 0px 5px 30px 5px rgba(255, 255, 255, 0.26);
-  border-radius: 5px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50px;
 }
 
 .save-btn {
