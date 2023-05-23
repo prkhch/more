@@ -281,7 +281,7 @@ export default {
         // 데이터를 받은 후 요청을 보내는 로직을 추가로 작성
         // 요청을 보내는 코드를 이곳에 작성
       } catch (error) {
-        console.error('좋아요 상태 가져오기 실패:', error);
+        console.error('※좋아요 상태를 가져오고 있습니다!!!:', error);
         this.fetchLike(movieId);
       }
     },
@@ -306,7 +306,7 @@ export default {
           this.isLater = response.data.islater; // true or false
         })
         .catch((error) => {
-          console.error('later표시 실패', error);
+          console.error('※나중에 볼 영화 상태를 가져오고 있습니다!!!', error);
           this.fetchisLater(movieId);
         });
     },
