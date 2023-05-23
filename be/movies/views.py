@@ -122,6 +122,16 @@ def movie_like(request, movie_pk, username):
     else:
         return Response(response, status=status.HTTP_403_FORBIDDEN)
 
+@api_view(['GET'])
+def movie_like_count(request, movie_pk):
+    response = {'like_count' : 0}
+    if request.method == 'GET' :
+        movie = get_object_or_404(Movie, pk=movie_pk)
+        response['like_count'] = movie.like.count()
+        return Response(response, status=status.HTTP_202_ACCEPTED)
+    else:
+        return Response(response, status=status.HTTP_403_FORBIDDEN)
+
 @api_view(['POST', 'GET'])
 def modify_watch_later(request, movie_pk, username):
     user = User.objects.get(username=username)

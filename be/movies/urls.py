@@ -10,6 +10,8 @@ urlpatterns = [
     path('movies/<int:movie_pk>/comment/<str:username>/', views.comment_create),
     # 좋아요
     path('movies/<int:movie_pk>/like/<str:username>/', views.movie_like),
+    # 좋아요 갯수
+    path('movies/<int:movie_pk>/likecount/', views.movie_like_count),
     # 나중에 볼 동영상 추가 및 삭제
     path('movies/<int:movie_pk>/watchlater/<str:username>/', views.modify_watch_later),
     # 나중에 볼 동영상 가져오기

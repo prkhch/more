@@ -303,20 +303,33 @@ export default {
       }
     },
     async fetchLike(movieId) {
-      try {
-        const response = await axios.get(`${this.$store.state.URL}/api/v1/movies/${movieId}/like/${this.$store.state.username}/`);
-        if (response.data.islike === 'like') {
-          this.isLike = false;
-        } else {
-          this.isLike = true;
+      console.log(this.$store.state.username)
+      if (this.$store.state.username == null) {
+        try {
+          const response = await axios.get(`${this.$store.state.URL}/api/v1/movies/${movieId}/likecount/`);
+          this.likeCount = response.data.like_count;
+          // 데이터를 받은 후 요청을 보내는 로직을 추가로 작성
+          // 요청을 보내는 코드를 이곳에 작성
+        } catch (error) {
+          console.error('※좋아요 상태를 가져오고 있습니다!!!:', error);
+          this.fetchLike(movieId);
         }
-        this.likeCount = response.data.like_count;
-        // 데이터를 받은 후 요청을 보내는 로직을 추가로 작성
-        // 요청을 보내는 코드를 이곳에 작성
-      } catch (error) {
-        console.error('※좋아요 상태를 가져오고 있습니다!!!:', error);
-        this.fetchLike(movieId);
-      }
+      } else {
+        try {
+          const response = await axios.get(`${this.$store.state.URL}/api/v1/movies/${movieId}/like/${this.$store.state.username}/`);
+          if (response.data.islike === 'like') {
+            this.isLike = false;
+          } else {
+            this.isLike = true;
+          }
+          this.likeCount = response.data.like_count;
+          // 데이터를 받은 후 요청을 보내는 로직을 추가로 작성
+          // 요청을 보내는 코드를 이곳에 작성
+        } catch (error) {
+          console.error('※좋아요 상태를 가져오고 있습니다!!!:', error);
+          this.fetchLike(movieId);
+        }
+    }
     },
     async like_movie(movieId) {
       try { // 비동기처리(post이후 fetchLike 순차적 호출(에러 방지))
@@ -339,8 +352,12 @@ export default {
           this.isLater = response.data.islater; // true or false
         })
         .catch((error) => {
-          console.error('※나중에 볼 영화 상태를 가져오고 있습니다!!!', error);
-          this.fetchisLater(movieId);
+          if(error.response.status === 500) {
+            console.error('※로그인이 필요한 기능입니다', error);
+          } else {
+            console.error('※나중에 볼 영화 상태를 가져오고 있습니다!!!', error);
+            this.fetchisLater(movieId);
+          }
         });
     },
     async later_movie(movieId) {
