@@ -44,7 +44,7 @@
     </div>
 
 
-    <div v-else style="width:100%; background-color:black; margin-top:50x;" class="text-center">
+    <div v-else style="background-color:black; margin-top:50x;" class="text-center">
       <div class="dank-ass-loader">
         <div class="row">
           <div class="arrow up outer outer-18"></div>

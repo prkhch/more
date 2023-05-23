@@ -142,14 +142,6 @@ nav {
   border-radius: 5px;
 }
 
-main {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #090707;
-}
 
 .dank-ass-loader {
   display: flex;
@@ -163,13 +155,13 @@ main {
 .arrow {
   width: 0;
   height: 0;
-  margin: 0 -6px;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-bottom: 21.6px solid #ffffff;
+  margin: 0 -36px;
+  border-left: 48px solid transparent;
+  border-right: 48px solid transparent;
+  border-bottom: 86.4px solid #ffffff;
   -webkit-animation: blink 1s infinite;
           animation: blink 1s infinite;
-  filter: drop-shadow(0 0 18px #ffffff);
+  filter: drop-shadow(0 0 100px #0287af);
 }
 .arrow.down {
   transform: rotate(180deg);
