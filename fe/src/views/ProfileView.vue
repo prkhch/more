@@ -46,6 +46,31 @@
         <p>프로필을 찾을 수 없습니다.</p>
       </div>
     </div>
+
+    <!-- 영화 저장 리스트 -->
+    <div class="later-movies"> 
+      <li v-for="movie in this.latermovies" :key="movie.id" class="movie-li">
+          <img :src="movie.poster_path" style="width:150px; height:150px;"  class="margin-auto" alt="...">
+          <div style="font-size:16px; color:white;" class="text-center">{{movie.title}}</div>
+        </li>
+    </div>
+
+    <h1>영화 추천 리스트</h1>
+    <!-- 영화 추천 리스트 -->
+    <!-- 1. for 영화 in 영화 저장 리스트 
+          영화 id에 있는 모든 키워드를 키워드 딕셔너리에 저장(mounted(비동기 처리해야함)) 
+          getKeyword()-->
+    <!-- 2. 딕셔너리 중 max 키워드 코드 출력 
+          getmaxKeyword();-->
+    <!-- 3. 해당 키워드 코드와 일치하는 영화 저장(추천 영화 리스트)  -->
+    <div class="rcm-movies"> 
+      <li v-for="movie in this.rcmMovies" :key="movie.id" class="movie-li">
+          <img :src="movie.poster_path" style="width:150px; height:150px;"  class="margin-auto" alt="...">
+          <div style="font-size:16px; color:white;" class="text-center">{{movie.title}}</div>
+        </li>
+    </div>
+
+
   </div>
 </template>
 
@@ -57,6 +82,7 @@ export default {
   computed: {
     ...mapState(['username'])
   },
+  
   data() {
     return {
       loading: true,
@@ -66,14 +92,127 @@ export default {
       is_follow: false,
       followings: [],
       followers: [],
+
+      latermovies : [],
+      keywordDict : {
+
+      },
+      maxKeyword : null,
+      rcmMovie : [],
+      rcmMovies : []
     };
   },
-  mounted() {
+  created() {
+
+  },
+  async mounted() {
     this.fetchProfile();
     this.ifYou();
     this.fetchFollow();
+    await this.getMoviesFromLaterView();
+    await this.getKeyword();
+    await this.getmaxKeyword();
+    await this.getRcmMovies();
+    await this.fetchRcmMovies();
+
+  },
+  watch: {
+    '$store.state.laterview': {
+      handler() {
+        this.latermovies = []
+        this.getMoviesFromLaterView(); // laterview 변경 시 movies 갱신
+      },
+      deep: true,
+    },
   },
   methods: {
+    async fetchRcmMovies(){
+      const rcmMovie = this.rcmMovie
+      for (const movie_id of rcmMovie) {
+        const movie = await this.getMovie(movie_id);
+        this.rcmMovies.push(movie);
+      }
+    },
+    async getRcmMovies() {
+      const apiKey = '8b1a427d0c951e52a5869304bde7a649';
+      const keywordurl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_keywords=${this.maxKeyword}&language=ko-KR`
+      try {
+        const response = await fetch(keywordurl);
+        const data = await response.json();
+        // 받아온 영화 데이터에서 영화 ID 추출하여 this.rcmMovie에 저장
+        this.rcmMovie = data.results.map(movie => movie.id);
+        console.log('추천 영화 ID:', this.rcmMovie);
+      } catch (error) {
+        console.error('영화 데이터를 가져오는 중 오류가 발생했습니다:', error);
+      }
+    },
+    async getKeyword() {
+      try {
+        for (const movie of this.latermovies) {
+          const apiKey = '8b1a427d0c951e52a5869304bde7a649';
+          const keywordurl = `https://api.themoviedb.org/3/movie/${movie.id}/keywords?api_key=${apiKey}&language=ko-KR`;
+          const response = await fetch(keywordurl);
+          const data = await response.json();
+          const keywords = data.keywords;
+
+          for (const keyword of keywords) {
+            const keywordId = keyword.id;
+
+            if (!(keywordId in this.keywordDict)) {
+              this.keywordDict[keywordId] = 1;
+            } else {
+              // 이미 있는 키인 경우, 값에 1 더하기
+              this.keywordDict[keywordId] += 1;
+            }
+          }
+        }
+        console.log('키워드 딕셔너리:', this.keywordDict);
+      } catch (error) {
+        console.error('영화 키워드를 가져오는 중 오류가 발생했습니다:', error);
+      }
+    },
+    getmaxKeyword() {
+      let maxCnt = -Infinity;
+      for(const keyword in this.keywordDict) {
+        if (this.keywordDict[keyword] > maxCnt) {
+          maxCnt = this.keywordDict[keyword];
+          this.maxKeyword = keyword;
+        }
+      }
+    },
+    async getMoviesFromLaterView() {
+      const laterview = this.$store.state.laterview;
+      for (const movie_id of laterview) {
+        const movie = await this.getMovie(movie_id);
+        this.latermovies.push(movie);
+      }
+    },
+    async getMovie(id) {
+      const apiKey = '8b1a427d0c951e52a5869304bde7a649';
+      const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=ko-KR`;
+
+      try {
+        const response = await axios.get(url);
+        const movieData = response.data;
+        
+        const movieId = movieData.id;
+        const movieTitle = movieData.title;
+        const baseUrl = 'https://image.tmdb.org/t/p/w500/';
+        const moviePosterPath = movieData.poster_path;
+        const posterUrl = baseUrl + moviePosterPath;
+
+        const movieDetails = {
+          id: movieId,
+          title: movieTitle,
+          poster_path: posterUrl,
+        };
+
+        return movieDetails;
+      } catch (error) {
+        console.log(error);
+        return null;
+      }
+    },
     ifYou() {
       if (this.username === this.$route.params.username) {
         this.isyou = true
@@ -121,7 +260,7 @@ export default {
         .catch(error => {
           console.error(error);
         });
-    }
+    },
   }
 };
 </script>
