@@ -186,22 +186,18 @@ export default {
           const response = await fetch(videoUrl);
           const data = await response.json();
 
-          if (data.results && data.results.length > 0) {
-            const firstVideo = data.results[9];
-            if(firstVideo.length < 1) {
-              const secondVideo = data.results[0];
-              this.youtubeUrl = `https://www.youtube.com/watch?v=${secondVideo.key}`;
-            } else {
+            if(data.results[9]) {
+              const firstVideo = data.results[9];
               this.youtubeUrl = `https://www.youtube.com/watch?v=${firstVideo.key}`;
+            } else if(data.results[1]){
+              const secondVideo = data.results[1];
+              this.youtubeUrl = `https://www.youtube.com/watch?v=${secondVideo.key}`;
             }
             console.log(this.youtubeUrl)
-          } else {
-            return null; // 만약 영상이 없는 경우 null을 반환하거나 다른 처리를 수행할 수 있습니다.
-          }
-        } catch (error) {
-          console.log(error);
-          return null;
-        }
+      } catch (error) {
+        console.log(error);
+        return null;
+      }
     },
     clickSound() {
       var audio = new Audio(require('@/assets/click.mp3'));

@@ -173,7 +173,7 @@ def get_watch_later(request, username):
         watchlist['result'].append(res.pk)
     return Response(watchlist, status=status.HTTP_200_OK)
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def follow(request, profilename, username):
     if profilename != username:
         data = {
@@ -184,19 +184,28 @@ def follow(request, profilename, username):
         profile = User.objects.get(username=profilename)
         user = User.objects.get(username=username)
         person = get_user_model().objects.get(pk=profile.id)
-        if person.followers.filter(pk=user.id).exists():
-            person.followers.remove(user.id)
-            data['result'] = 'unfollow'
-        else:
-            person.followers.add(user.id)
-            data['result'] = 'follow'
-        data['is_following'] = person.followers.filter(pk=user.id).exists()
-        data['followers'] = list(person.followers.values('id',))
-        return Response(data, status=status.HTTP_200_OK)
+        if request.method == 'POST':
+            if person.followers.filter(pk=user.id).exists():
+                person.followers.remove(user.id)
+                data['result'] = 'unfollow'
+            else:
+                person.followers.add(user.id)
+                data['result'] = 'follow'
+            data['is_following'] = person.followers.filter(pk=user.id).exists()
+            data['followers'] = list(person.followers.values('id',))
+            return Response(data, status=status.HTTP_200_OK)
+        elif request.method == 'GET':
+            if person.followers.filter(pk=user.id).exists():
+                data['result'] = 'follow'
+            else:
+                data['result'] = 'unfollow'
+            data['is_following'] = person.followers.filter(pk=user.id).exists()
+            data['followers'] = list(person.followers.values('id',))
+            return Response(data, status=status.HTTP_200_OK)
     else:
         data = {
             'result':'동일인',
             'is_following': False,
             'followers': []
         }
-        return Response(data, status=status.HTTP_403_FORBIDDEN)
+        return Response(data, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)

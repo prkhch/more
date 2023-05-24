@@ -8,6 +8,7 @@ import SearchView from "@/views/SearchView.vue"
 import ProfileView from "@/views/ProfileView.vue"
 import LaterView from "@/views/LaterView.vue"
 import TestView from "@/views/TestView.vue"
+import EditProfileView from "@/views/EditProfileView.vue"
 
 Vue.use(VueRouter)
 
@@ -41,6 +42,11 @@ const routes = [
     path: '/profile/:username',
     name : 'profile',
     component : ProfileView
+  },
+  {
+    path: '/profile/:username/edit',
+    name : 'editprofile',
+    component : EditProfileView
   },
   {
     path: '/later/:username',

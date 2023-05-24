@@ -20,14 +20,23 @@
               </div>
             </div>
             <div v-if="isyou">
-              <button type="button" class="btn save-btn mx-3" @click="clickSound();">
-                <i class="fa-solid">개인 정보 수정</i>
-              </button>
+              <router-link :to="{ name: 'editprofile', params: { username: this.$store.state.username } }">
+                <button type="button" class="btn save-btn mx-3" @click="clickSound();">
+                  <i class="fa-solid">개인 정보 수정</i>
+                </button>
+              </router-link>
             </div>
             <div v-else>
-              <button type="button" class="save-btn btn mx-3" @click="follow(), clickSound();">
-                <i class="fa-solid">팔로우</i>
-              </button>
+              <div v-if="is_follow">
+                <button type="button" class="save-btn btn mx-3" @click="follow(), clickSound();">
+                  <i class="fa-solid">언팔로우</i>
+                </button>
+              </div>
+              <div v-else>
+                <button type="button" class="save-btn btn mx-3" @click="follow(), clickSound();">
+                  <i class="fa-solid">팔로우</i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -54,6 +63,7 @@ export default {
       profile: null,
       profile_image: null,
       isyou: false,
+      is_follow: false,
       followings: [],
       followers: [],
     };
@@ -61,7 +71,7 @@ export default {
   mounted() {
     this.fetchProfile();
     this.ifYou();
-    console.log(this.profile_image);
+    this.fetchFollow();
   },
   methods: {
     ifYou() {
@@ -93,10 +103,19 @@ export default {
           this.loading = false;
         });
     },
+    async fetchFollow() {
+      const response = await axios.get(`${this.$store.state.URL}/api/v1/profile/${this.$route.params.username}/${this.username}/`)
+      if (response.data.is_following) {
+        this.is_follow = true
+      } else {
+        this.is_follow = false
+      }
+    },
     follow() {
       axios
         .post(`${this.$store.state.URL}/api/v1/profile/${this.$route.params.username}/${this.username}/`)
         .then(response => {
+          this.fetchFollow()
           this.followers = response.data.followers;
         })
         .catch(error => {
