@@ -58,6 +58,7 @@
     <h1>영화 추천 리스트</h1>
     <!-- 영화 추천 리스트 -->
     <!-- 1. for 영화 in 영화 저장 리스트 
+              for keyword in movie_keywords(영화)
           영화 id에 있는 모든 키워드를 키워드 딕셔너리에 저장(mounted(비동기 처리해야함)) 
           getKeyword()-->
     <!-- 2. 딕셔너리 중 max 키워드 코드 출력 
@@ -97,8 +98,9 @@ export default {
       keywordDict : {
 
       },
+      maxKeywordList : [],
       maxKeyword : null,
-      rcmMovie : [],
+      rcmMovieIds : [],
       rcmMovies : []
     };
   },
@@ -111,9 +113,9 @@ export default {
     this.fetchFollow();
     await this.getMoviesFromLaterView();
     await this.getKeyword();
-    await this.getmaxKeyword();
-    await this.getRcmMovies();
-    await this.fetchRcmMovies();
+    await this.getmaxKeyword(); // 최대 키워드 갖기 | 최대 키워드가 여러 개일 경우 다 같이 저장 (+ 최대 키워드 오차 인정: 2)
+    await this.getRcmMovies(); // 추천 영화 아이디들을 받기
+    await this.fetchRcmMovies(); // 해당 영화 아이디들을 통해 영화 정보 받기
 
   },
   watch: {
@@ -127,21 +129,29 @@ export default {
   },
   methods: {
     async fetchRcmMovies(){
-      const rcmMovie = this.rcmMovie
-      for (const movie_id of rcmMovie) {
+      const rcmMovieIds = this.rcmMovieIds
+      for (const movie_id of rcmMovieIds) {
         const movie = await this.getMovie(movie_id);
         this.rcmMovies.push(movie);
       }
     },
     async getRcmMovies() {
       const apiKey = '8b1a427d0c951e52a5869304bde7a649';
+      if (this.maxKeywordList.length > 1) {
+        const randomIndex = Math.floor(Math.random() * this.maxKeywordList.length);
+        this.maxKeyword = this.maxKeywordList[randomIndex];
+      } else if (this.maxKeywordList.length === 1) {
+        this.maxKeyword = this.maxKeywordList[0];
+      }
+      console.log('맥스키워드리스트', this.maxKeywordList)
+      console.log('맥스키워드', this.maxKeyword)
       const keywordurl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_keywords=${this.maxKeyword}&language=ko-KR`
       try {
         const response = await fetch(keywordurl);
         const data = await response.json();
-        // 받아온 영화 데이터에서 영화 ID 추출하여 this.rcmMovie에 저장
-        this.rcmMovie = data.results.map(movie => movie.id);
-        console.log('추천 영화 ID:', this.rcmMovie);
+        // 받아온 영화 데이터에서 영화 ID 추출하여 this.rcmMovieIds에 저장
+        this.rcmMovieIds = data.results.map(movie => movie.id);
+        console.log('추천 영화 ID:', this.rcmMovieIds);
       } catch (error) {
         console.error('영화 데이터를 가져오는 중 오류가 발생했습니다:', error);
       }
@@ -174,9 +184,11 @@ export default {
     getmaxKeyword() {
       let maxCnt = -Infinity;
       for(const keyword in this.keywordDict) {
-        if (this.keywordDict[keyword] > maxCnt) {
-          maxCnt = this.keywordDict[keyword];
-          this.maxKeyword = keyword;
+        if ((maxCnt-2) <= this.keywordDict[keyword] <= maxCnt) {  // 오차범위 안이면 넣기.
+          this.maxKeywordList.push(keyword); // 
+          } else if(this.keywordDict[keyword] > maxCnt + 2) { // 오차범위 쳐준 것보다도 더 많은 키워드라면
+          maxCnt = this.keywordDict[keyword]; // 최댓값 갱신
+          this.maxKeywordList = [keyword]; // 키워드리스트 초기화한 후 키워드 넣기
         }
       }
     },
