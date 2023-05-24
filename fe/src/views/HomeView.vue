@@ -1,6 +1,6 @@
 <template>
   <div class="home-view">
-    <h1 class="text-center text-light">인기 영화</h1>
+    <h1 class="text-center text-light">{{ genrename }} 영화</h1>
 
     <div class="" style="display: flex; justify-content: center; align-items: center;">
       <div class="cardgroup row row-cols-1 row-cols-md-5 g-5 mt-3">
@@ -76,6 +76,22 @@ export default {
       loading: false,
     };
   },
+  computed: {
+    genrename() {
+      return this.$store.state.genrename;
+    }
+  },
+  watch: {
+    '$store.state.genreId': {
+      handler() {
+        console.log('watch')
+        // genreId가 변경될 때마다 실행되는 로직
+        this.page = 1; // 페이지 초기화
+        this.movies = []; // 영화 목록 초기화
+        this.fetchMovies(); // 새로운 영화 로딩
+      },
+    },
+  },
   mounted() {
     this.fetchMovies();
     window.addEventListener('scroll', this.handleScroll);
@@ -93,16 +109,22 @@ export default {
     async fetchMovies() {
       if (this.loading) return;
       this.loading = true;
-
       const apiKey = '8b1a427d0c951e52a5869304bde7a649';
-      const apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=ko-KR&page=${this.page}&certification_country=KR&certification.lte=15`
-
+      let apiUrl = ''
+      this.genre_Id = this.$store.state.genreId
+      if (this.genre_Id == 0) {
+        apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=ko-KR&page=${this.page}&certification_country=KR&certification.lte=15`
+      } else if (this.genre_Id !== 0) {
+        apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=ko-KR&sort_by=popularity.desc&page=${this.page}&with_genres=${this.genre_Id}&certification_country=KR&certification.lte=15`
+      }
+      console.log(apiUrl)
       try {
         const response = await axios.get(apiUrl);
         const newMovies = response.data.results;
         this.movies = [...this.movies, ...newMovies];
         this.page++;
         this.loading = false;
+        console.log(this.movies)
       } catch (error) {
         console.error(error);
         this.loading = false;

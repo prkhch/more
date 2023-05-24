@@ -14,7 +14,9 @@ export default new Vuex.Store({
     username: null,
     token: null,
     URL: "http://localhost:8000", // 백엔드
-    laterview : []
+    laterview : [],
+    genreId: 0,
+    genrename: '인기',
   },
   getters: {
     isLogin(state) {
@@ -38,6 +40,12 @@ export default new Vuex.Store({
     },
     SET_LATERVIEW(state, laterview) {
       state.laterview = laterview;
+    },
+    SWITCH_GENRE(state, genreid) {
+      state.genreId = genreid
+    },
+    SWITCH_GENRE_NAME(state, genrename) {
+      state.genrename = genrename
     },
   },
   actions: {
@@ -103,6 +111,12 @@ export default new Vuex.Store({
       } catch (error) {
         console.log(error);
       }
+    },
+    switchGenre(context, genreid) {
+      context.commit('SWITCH_GENRE', genreid)
+    },
+    switchGenreName(context, genrename) {
+      context.commit('SWITCH_GENRE_NAME', genrename)
     },
 
   },

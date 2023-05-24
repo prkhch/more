@@ -16,6 +16,22 @@
         </router-link>
         </span>
       </div>
+
+      <div class="dropdown dropdown-genre">
+        <button class="dropdown-toggle dropdown-genre" @click="toggleDropdown">장르</button>
+        <ul class="dropdown-menu dropdown-genre p-0" v-if="isDropdownOpen"  v-click-outside="closeDropdown">
+          <li class="dropdown-item dropdown-genre mx-0 mt-0" @click="switchGenre('0'), switchGenreName('인기')">인기</li>
+          <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('28'), switchGenreName('액션')">액션</li>
+          <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('16'), switchGenreName('애니메이션')">애니메이션</li>
+          <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('35'), switchGenreName('코미디')">코미디</li>
+          <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('80'), switchGenreName('범죄')">범죄</li>
+          <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('27'), switchGenreName('공포')">공포</li>
+          <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('10749'), switchGenreName('로맨스')">로맨스</li>
+          <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('878'), switchGenreName('SF')">SF</li>
+          <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('53'), switchGenreName('범죄')">범죄</li>
+          <li class="dropdown-item dropdown-genre mx-0 mb-0" @click="switchGenre('14'), switchGenreName('판타지')">판타지</li>
+        </ul>
+      </div>
       
     </div>
 
@@ -50,6 +66,7 @@
 import Vue from 'vue';
 import VueCarousel from 'vue-carousel';
 import LaterView from '@/views/LaterView.vue'
+import vClickOutside from 'v-click-outside'
 import VueDraggableResizable from 'vue-draggable-resizable'
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
 
@@ -57,12 +74,16 @@ Vue.component('vue-draggable-resizable', VueDraggableResizable)
 Vue.use(VueCarousel);
 
 export default {
+  directives: {
+    ClickOutside: vClickOutside.directive,
+  },
   components : {
     LaterView
   },
   data() {
     return {
       showSearch: false,
+      isDropdownOpen: false,
     };
   },
   computed: {
@@ -71,6 +92,20 @@ export default {
     },
   },
   methods: {
+    switchGenre(genreid) {
+      this.$store.dispatch('switchGenre', genreid)
+      console.log(this.$store.state.genreId)
+    },
+    switchGenreName(genrename) {
+      this.$store.dispatch('switchGenreName', genrename)
+      console.log(this.$store.state.genrename)
+    },
+    toggleDropdown() {
+      this.isDropdownOpen = !this.isDropdownOpen;
+    },
+    closeDropdown() {
+      this.isDropdownOpen = false
+    },
     logout() {
       this.$store.dispatch('logout');
     },
@@ -346,6 +381,51 @@ nav {
     opacity: 0.1;
   }
 }
+
+.dropdown.dropdown-genre {
+  position: relative;
+  display: inline-block;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border-radius: 4px;
+}
+
+.dropdown-toggle.dropdown-genre {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown-toggle.dropdown-genre::after {
+  display: none;
+}
+
+.dropdown-menu.dropdown-genre {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  list-style: none;
+  display:block;
+}
+
+
+.dropdown-item.dropdown-genre {
+  padding: 5px 10px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.dropdown-item.dropdown-genre:hover {
+  background-color: rgba(128, 128, 128, 1);
+}
+
 
 </style>
 
