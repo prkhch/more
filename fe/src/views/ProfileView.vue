@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <div>
+    <div style="padding-left: 150px;">
       <h1>나중에 볼 영화</h1>
       <!-- 영화 저장 리스트 -->
 
@@ -330,9 +330,6 @@ export default {
 </script>
 
 <style>
-/* body {
-  background-color: #f5f5f5;
-} */
 
 .profile-page {
   background-color: black;

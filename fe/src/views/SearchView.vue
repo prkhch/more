@@ -42,15 +42,28 @@ export default {
       loading: false,
     };
   },
+  created() {
+    this.searchMovies()
+  },
   methods: {
     async searchMovies() {
       if (this.loading) return;
 
       const apiKey = '8b1a427d0c951e52a5869304bde7a649';
-      const apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${this.searchTerm}&language=ko-KR`;
-
+      let apiUrl = ''
+      if (this.searchTerm === '') {
+        const genre_Id = this.$store.state.genreId
+        if (genre_Id == 0) {
+          apiUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=ko-KR&page=${this.page}&certification_country=KR&certification.lte=15`
+        } else if (genre_Id !== 0) {
+          apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=ko-KR&sort_by=popularity.desc&page=${this.page}&with_genres=${genre_Id}&certification_country=KR&certification.lte=15`
+        }
+      } else {
+        apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${this.searchTerm}&language=ko-KR`;
+      }
       try {
-
+        console.log(1)
+        console.log(apiUrl)
         const response = await fetch(apiUrl);
         const data = await response.json();
         this.movies = data.results;

@@ -1,6 +1,6 @@
 <template>
   <div class="login-view">
-    <h1>LoginView</h1>
+    <h1>로그인</h1>
     <div class="form-floating">
       <input
         type="text"
@@ -9,7 +9,7 @@
         v-model="username"
         @keyup.enter="login"
       >
-      <label for="user-id">아이디를 입력하세요</label>
+      <label for="user-id" style="color: black;">아이디를 입력하세요</label>
     </div>
     <div class="form-floating">
       <input
@@ -19,7 +19,7 @@
         v-model="password"
         @keyup.enter="login"
       >
-      <label for="user-password">비밀번호를 입력하세요</label>
+      <label for="user-password" style="color: black;">비밀번호를 입력하세요</label>
     </div>
     <button type="button" class="btn btn-primary btn-block" @click="login">로그인</button>
 

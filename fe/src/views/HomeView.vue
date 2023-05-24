@@ -1,6 +1,21 @@
 <template>
   <div class="home-view">
-    <h1 class="text-center text-light">{{ genrename }} 영화</h1>
+    <!-- <h1 class="text-center text-light">{{ genrename }} 영화</h1> -->
+    <div class="dropdown d-flex justify-content-center fs-1">
+      <button class="custom-btn btn-3" @click="toggleDropdown">{{ genrename }} 영화</button>
+      <ul class="dropdown-menu dropdown-genre p-0" v-if="isDropdownOpen"  v-click-outside="closeDropdown">
+        <li class="dropdown-item dropdown-genre mx-0 mt-0" @click="switchGenre('0'), switchGenreName('인기'), toggleDropdown()">인기</li>
+        <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('28'), switchGenreName('액션'), toggleDropdown()">액션</li>
+        <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('16'), switchGenreName('애니메이션'), toggleDropdown()">애니메이션</li>
+        <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('35'), switchGenreName('코미디'), toggleDropdown()">코미디</li>
+        <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('80'), switchGenreName('범죄'), toggleDropdown()">범죄</li>
+        <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('27'), switchGenreName('공포'), toggleDropdown()">공포</li>
+        <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('10749'), switchGenreName('로맨스'), toggleDropdown()">로맨스</li>
+        <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('878'), switchGenreName('SF'), toggleDropdown()">SF</li>
+        <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('53'), switchGenreName('스릴러'), toggleDropdown()">스릴러</li>
+        <li class="dropdown-item dropdown-genre mx-0 mb-0" @click="switchGenre('14'), switchGenreName('판타지'), toggleDropdown()">판타지</li>
+      </ul>
+    </div>
 
     <div class="" style="display: flex; justify-content: center; align-items: center;">
       <div class="cardgroup row row-cols-1 row-cols-md-5 g-5 mt-3">
@@ -64,9 +79,13 @@
 
 <script>
 import axios from "axios"
+import vClickOutside from 'v-click-outside'
 
 export default {
   name: 'HomeView',
+  directives: {
+    ClickOutside: vClickOutside.directive,
+  },
   components: {},
   data() {
     return {
@@ -74,6 +93,7 @@ export default {
       hoveredMovie: null,
       page: 1,
       loading: false,
+      isDropdownOpen: false,
     };
   },
   computed: {
@@ -100,6 +120,20 @@ export default {
     window.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
+    switchGenre(genreid) {
+      this.$store.dispatch('switchGenre', genreid)
+      console.log(this.$store.state.genreId)
+    },
+    switchGenreName(genrename) {
+      this.$store.dispatch('switchGenreName', genrename)
+      console.log(this.$store.state.genrename)
+    },
+    toggleDropdown() {
+      this.isDropdownOpen = !this.isDropdownOpen;
+    },
+    closeDropdown() {
+      this.isDropdownOpen = false
+    },
     getImageUrl(posterPath) {
       const baseUrl = 'https://image.tmdb.org/t/p/';
       const size = 'w500';
@@ -198,5 +232,42 @@ export default {
 .card:hover{
   box-shadow: 0px 5px 30px 5px rgba(255, 255, 255, 1);
   border-radius: 5px;
+}
+
+.dropdown-toggle.dropdown-genre {
+  background-color: rgba(255,255,255,0.2);
+  border: 1px solid #ccc;
+  padding: 10px;
+  cursor: pointer;
+  width: 100px;
+  color: white;
+}
+
+.dropdown-toggle.dropdown-genre::after {
+  display: none;
+}
+
+.dropdown-menu.dropdown-genre {
+  position: absolute;
+  top: 100%;
+  left: 42%;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  list-style: none;
+  display:block;
+}
+
+
+.dropdown-item.dropdown-genre {
+  padding: 5px 10px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.dropdown-item.dropdown-genre:hover {
+  background-color: rgba(128, 128, 128, 1);
 }
 </style>
