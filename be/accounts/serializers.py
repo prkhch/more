@@ -10,6 +10,10 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'profile_image', 'first_name', 'last_name', 'email', 'last_login', 'date_joined', 'followings', 'followers')
 
 class ModifyProfileSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(required=False, allow_blank=True, default='')
+    last_name = serializers.CharField(required=False, allow_blank=True, default='')
+    email = serializers.EmailField(required=False, allow_blank=True)
+    profile_image = serializers.ImageField(required=False, allow_null=True)
     class Meta:
         model = get_user_model()
         fields = ('first_name', 'last_name', 'email', 'profile_image',)

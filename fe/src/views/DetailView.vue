@@ -95,32 +95,38 @@
         <h3>댓글</h3>
         <div class="input-container">
           <textarea type="text" class="form-control input-field" v-model="content" @keyup.enter="createComment(movie.id)" @click="clickSound();"></textarea>
-          <button type="button" class="btn save-btn" style="color: white; height:40px" @click="createComment(movie.id); clickSound();"><i class="fa-solid fa-turn-down fa-rotate-90" style="color: #ffffff; font-size:20px"></i></button>
+          <button type="button" class="btn save-btn ms-2" style="color: white; height:40px" @click="createComment(movie.id); clickSound();">
+            <i class="fa-solid fa-turn-down fa-rotate-90" style="color: #ffffff; font-size:20px"></i>
+          </button>
         </div>
 
         <br>
 
         <ul>
           <li v-for="comment in comments" :key="comment.id" class="m-1">
-            {{ comment.id }}
+            <!-- {{ comment.user.profile_image }} -->
+            <!-- {{ this.$store.state.URL }} -->
+            <img style="width: 35px; height: 35px;" :src="`http://localhost:8000${comment.user.profile_image}`" alt="프로필 이미지" class="profile-image">
             
-            <router-link :to="{ name: 'profile', params:{ username:comment.user.username } }" style="text-decoration: underline">
+            <router-link :to="{ name: 'profile', params:{ username:comment.user.username } }" style="text-decoration: underline; color: white;">
               {{ comment.user.username }}
             </router-link>
             
-            <div v-if="comment.editing">
+            <div v-if="comment.editing" class="d-flex">
               <textarea type="text" class="form-control input-field" v-model="comment.editcontent" @keyup.enter="modifyComment(comment);" @click="clickSound();"></textarea>
-              <button type="button" class="btn save-btn" style="color: white; height:40px" @click="modifyComment(comment); clickSound();"><i class="fa-solid fa-turn-down fa-rotate-90" style="color: #ffffff; font-size:20px"></i></button>
-              <button type="button" class="save-btn btn mx-3" @click="cancelEdit(comment); clickSound();">
+              <button type="button" class="btn save-btn ms-2" style="color: white; height:40px" @click="modifyComment(comment); clickSound();">
+                <i class="fa-solid fa-turn-down fa-rotate-90" style="color: #ffffff; font-size:20px"></i>
+              </button>
+              <button type="button" class="save-btn btn ms-2" @click="cancelEdit(comment); clickSound();">
                 <i class="fa-solid" style="color: #ffffff;">취소</i>
               </button>
             </div>
             <div v-else>
               {{ comment.content }}
-              <button type="button" class="save-btn btn mx-3" @click="startEdit(comment); clickSound();">
+              <button type="button" class="save-btn btn ms-5" @click="startEdit(comment); clickSound();">
                 <i class="fa-solid" style="color: #ffffff;">수정</i>
               </button>
-              <button type="button" class="save-btn btn mx-3" @click="deleteComment(comment.id); clickSound();">
+              <button type="button" class="save-btn btn ms-0" @click="deleteComment(comment.id); clickSound();">
                 <i class="fa-solid fa-delete-left" style="color: #ffffff;"></i>
               </button>
             </div>

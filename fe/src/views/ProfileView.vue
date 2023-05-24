@@ -50,14 +50,24 @@
     <div>
       <h1>나중에 볼 영화</h1>
       <!-- 영화 저장 리스트 -->
-      <div class="later-movies"> 
-        <li v-for="movie in this.latermovies" :key="movie.id" class="movie-li">
+
+      <div class="cardgroup row row-cols-1 row-cols-md-5 g-5 mt-3">
+        <div class="col mt-2 mb-5" v-for="movie in this.latermovies" :key="movie.id">
+          <div class="card">
             <router-link :to="{ name: 'detail', params: { id: movie.id } }">
-            <img :src="movie.poster_path" style="width:150px; height:150px;"  class="margin-auto" alt="...">
+              <div class="image-container">
+                <img :src="getImageUrl(movie.poster_path)" class="card-img-top border" alt="..." @click="playSound" @mouseover="handleHover(movie)" @mouseleave="handleHover(null)">
+              </div>
             </router-link>
-            <span style="font-size:16px; color:white;" class="text-center">{{movie.title}}</span>
-          </li>
+          </div>
+          <div style="height:20px">
+            <transition name="fade">
+              <div class="movie-title" v-if="hoveredMovie === movie">{{ movie.title }}</div>
+            </transition>
+          </div>
+        </div>
       </div>
+
 
       <h1>영화 추천 리스트</h1>
       <p style="font-style:italic; font-size:12px;">나중에 볼 영화를 기반으로 추천합니다.</p>
@@ -69,15 +79,23 @@
       <!-- 2. 딕셔너리 중 max 키워드 코드 출력 
             getmaxKeyword();-->
       <!-- 3. 해당 키워드 코드와 일치하는 영화 저장(추천 영화 리스트)  -->
-      <div class="rcm-movies"> 
-        <li v-for="movie in this.rcmMovies" :key="movie.id" class="movie-li">
-          <router-link :to="{ name: 'detail', params: { id: movie.id } }">
-            <div>
-            <img :src="movie.poster_path" style="width:150px; height:150px;"  class="margin-auto" alt="...">
-            </div>
-          </router-link>
-            <span style="font-size:16px; color:white;" class="text-center">{{movie.title}}</span>
-          </li>
+
+
+      <div class="rcm-movies cardgroup row row-cols-1 row-cols-md-5 g-5 mt-3">
+        <div class="col mt-2 mb-5" v-for="movie in this.rcmMovies" :key="movie.id">
+          <div class="card">
+            <router-link :to="{ name: 'detail', params: { id: movie.id } }">
+              <div class="image-container">
+                <img :src="getImageUrl(movie.poster_path)" class="card-img-top border" alt="..." @click="playSound" @mouseover="handleHover(movie)" @mouseleave="handleHover(null)">
+              </div>
+            </router-link>
+          </div>
+          <div style="height:20px">
+            <transition name="fade">
+              <div class="movie-title" v-if="hoveredMovie === movie">{{ movie.title }}</div>
+            </transition>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -110,7 +128,8 @@ export default {
       maxKeywordList : [],
       maxKeyword : null,
       rcmMovieIds : [],
-      rcmMovies : []
+      rcmMovies : [],
+      hoveredMovie: null,
     };
   },
   created() {
@@ -137,6 +156,12 @@ export default {
     },
   },
   methods: {
+    getImageUrl(posterPath) {
+      const baseUrl = 'https://image.tmdb.org/t/p/';
+      const size = 'w500';
+      return `${baseUrl}${size}${posterPath}`;
+    },
+
     async fetchRcmMovies(){ // 5. 추천받은 영화id정보를 통해 영화 객체 저장
       const rcmMovieIds = this.rcmMovieIds
       for (const movie_id of rcmMovieIds) { // ★★ 이미 저장된 영화는 추천하지 않음
@@ -289,6 +314,17 @@ export default {
           console.error(error);
         });
     },
+
+    handleHover(movie) {
+      this.hoveredMovie = movie;
+    },
+    playSound() {
+      var audio = new Audio(require('@/assets/click.mp3'));
+      audio.play()
+        .catch(error => {
+          console.error('소리를 재생할 수 없습니다:', error);
+        });
+    },
   }
 };
 </script>
@@ -375,5 +411,18 @@ export default {
 
 .save-btn {
   position: relative;
+}
+
+.card{
+  transition: box-shadow 1s;
+  box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 0);
+}
+.card:hover{
+  box-shadow: 0px 5px 30px 5px rgba(255, 255, 255, 1);
+  border-radius: 5px;
+}
+.movie-title {
+  color: white;
+  font-size : 20px;
 }
 </style>

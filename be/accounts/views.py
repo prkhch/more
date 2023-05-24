@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -12,7 +13,7 @@ def profile(request, username):
         person = User.objects.get(username=username)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-
+    print(person)
     if request.method == 'GET':
         serializer = UserSerializer(person)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -22,8 +23,16 @@ def profile(request, username):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
+            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 class ChangePasswordView(generics.UpdateAPIView):
     queryset = User.objects.all()
     permission_classes = (IsAuthenticated,)
     serializer_class = ChangePasswordSerializer
+
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        obj = get_object_or_404(queryset, username=self.kwargs.get('username'))
+        self.check_object_permissions(self.request, obj)
+        return obj
