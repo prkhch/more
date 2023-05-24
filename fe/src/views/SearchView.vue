@@ -1,6 +1,8 @@
 <template>
   <div class="search-view">
-    <input type="text" v-model="searchTerm" @input="searchMovies" placeholder="영화 검색" />
+    <div class="search-container">
+      <input type="text" v-model="searchTerm" @input="searchMovies" placeholder="영화 검색" class="search-input" />
+    </div>
     
 
     <div class="" style="display: flex; justify-content: center; align-items: center;">
@@ -81,3 +83,24 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.search-container {
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  width: 200px;
+  height: 40px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  border-radius: 20px;
+}
+
+</style>

@@ -47,30 +47,39 @@
       </div>
     </div>
 
-    <!-- 영화 저장 리스트 -->
-    <div class="later-movies"> 
-      <li v-for="movie in this.latermovies" :key="movie.id" class="movie-li">
-          <img :src="movie.poster_path" style="width:150px; height:150px;"  class="margin-auto" alt="...">
-          <div style="font-size:16px; color:white;" class="text-center">{{movie.title}}</div>
-        </li>
-    </div>
+    <div>
+      <h1>나중에 볼 영화</h1>
+      <!-- 영화 저장 리스트 -->
+      <div class="later-movies"> 
+        <li v-for="movie in this.latermovies" :key="movie.id" class="movie-li">
+            <router-link :to="{ name: 'detail', params: { id: movie.id } }">
+            <img :src="movie.poster_path" style="width:150px; height:150px;"  class="margin-auto" alt="...">
+            </router-link>
+            <span style="font-size:16px; color:white;" class="text-center">{{movie.title}}</span>
+          </li>
+      </div>
 
-    <h1>영화 추천 리스트</h1>
-    <!-- 영화 추천 리스트 -->
-    <!-- 1. for 영화 in 영화 저장 리스트 
-              for keyword in movie_keywords(영화)
-          영화 id에 있는 모든 키워드를 키워드 딕셔너리에 저장(mounted(비동기 처리해야함)) 
-          getKeyword()-->
-    <!-- 2. 딕셔너리 중 max 키워드 코드 출력 
-          getmaxKeyword();-->
-    <!-- 3. 해당 키워드 코드와 일치하는 영화 저장(추천 영화 리스트)  -->
-    <div class="rcm-movies"> 
-      <li v-for="movie in this.rcmMovies" :key="movie.id" class="movie-li">
-          <img :src="movie.poster_path" style="width:150px; height:150px;"  class="margin-auto" alt="...">
-          <div style="font-size:16px; color:white;" class="text-center">{{movie.title}}</div>
-        </li>
+      <h1>영화 추천 리스트</h1>
+      <p style="font-style:italic; font-size:12px;">나중에 볼 영화를 기반으로 추천합니다.</p>
+      <!-- 영화 추천 리스트 -->
+      <!-- 1. for 영화 in 영화 저장 리스트 
+                for keyword in movie_keywords(영화)
+            영화 id에 있는 모든 키워드를 키워드 딕셔너리에 저장(mounted(비동기 처리해야함)) 
+            getKeyword()-->
+      <!-- 2. 딕셔너리 중 max 키워드 코드 출력 
+            getmaxKeyword();-->
+      <!-- 3. 해당 키워드 코드와 일치하는 영화 저장(추천 영화 리스트)  -->
+      <div class="rcm-movies"> 
+        <li v-for="movie in this.rcmMovies" :key="movie.id" class="movie-li">
+          <router-link :to="{ name: 'detail', params: { id: movie.id } }">
+            <div>
+            <img :src="movie.poster_path" style="width:150px; height:150px;"  class="margin-auto" alt="...">
+            </div>
+          </router-link>
+            <span style="font-size:16px; color:white;" class="text-center">{{movie.title}}</span>
+          </li>
+      </div>
     </div>
-
 
   </div>
 </template>
@@ -128,14 +137,24 @@ export default {
     },
   },
   methods: {
-    async fetchRcmMovies(){
+    async fetchRcmMovies(){ // 5. 추천받은 영화id정보를 통해 영화 객체 저장
       const rcmMovieIds = this.rcmMovieIds
-      for (const movie_id of rcmMovieIds) {
+      for (const movie_id of rcmMovieIds) { // ★★ 이미 저장된 영화는 추천하지 않음
+        const foundMovie = this.latermovies.find(movie => movie.id === movie_id);
+        if (foundMovie) {
+          continue; // latermovies에 이미 해당 영화 객체가 있으면 다음 반복으로 넘어감
+        }
         const movie = await this.getMovie(movie_id);
+        if(movie.poster_path=="https://image.tmdb.org/t/p/w500/null") {
+          continue;
+        }
+        console.log(movie)
         this.rcmMovies.push(movie);
       }
+      this.rcmMovies.sort(() => Math.random() - 0.5); // 한번 더 섞기
+
     },
-    async getRcmMovies() {
+    async getRcmMovies() { // 4. 뽑아낸 키워드 리스트중 하나를 랜덤으로 선택
       const apiKey = '8b1a427d0c951e52a5869304bde7a649';
       if (this.maxKeywordList.length > 1) {
         const randomIndex = Math.floor(Math.random() * this.maxKeywordList.length);
@@ -143,20 +162,17 @@ export default {
       } else if (this.maxKeywordList.length === 1) {
         this.maxKeyword = this.maxKeywordList[0];
       }
-      console.log('맥스키워드리스트', this.maxKeywordList)
-      console.log('맥스키워드', this.maxKeyword)
-      const keywordurl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_keywords=${this.maxKeyword}&language=ko-KR`
+      const keywordurl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_keywords=${this.maxKeyword}&language=ko-KRcertification_country=KR&certification.lte=15&sort_by=popularity.desc`
       try {
         const response = await fetch(keywordurl);
         const data = await response.json();
         // 받아온 영화 데이터에서 영화 ID 추출하여 this.rcmMovieIds에 저장
-        this.rcmMovieIds = data.results.map(movie => movie.id);
-        console.log('추천 영화 ID:', this.rcmMovieIds);
+        this.rcmMovieIds = data.results.map(movie => movie.id); 
       } catch (error) {
         console.error('영화 데이터를 가져오는 중 오류가 발생했습니다:', error);
       }
     },
-    async getKeyword() {
+    async getKeyword() { // 2. 해당 영화의 키워드 가져오기 (키워드 딕셔너리 만들기)
       try {
         for (const movie of this.latermovies) {
           const apiKey = '8b1a427d0c951e52a5869304bde7a649';
@@ -165,34 +181,34 @@ export default {
           const data = await response.json();
           const keywords = data.keywords;
 
-          for (const keyword of keywords) {
-            const keywordId = keyword.id;
+          // ★★한 영화당 저장영화의 수만큼의 키워드 저장(적은 영화에 확률을 높이기 위함)
+          // 더 많은 영화를 저장할 수록 추천받을 확률 UP
+          for (let i=0; i<this.latermovies.length; i++) { 
+            const keywordId = keywords[i].id;
 
-            if (!(keywordId in this.keywordDict)) {
+            if (!(keywordId in this.keywordDict)) { // 새로운 키워드는 추가
               this.keywordDict[keywordId] = 1;
             } else {
-              // 이미 있는 키인 경우, 값에 1 더하기
-              this.keywordDict[keywordId] += 1;
+              this.keywordDict[keywordId] += 1; // 이미 있는 키인 경우, 값에 1 더하기
             }
           }
         }
-        console.log('키워드 딕셔너리:', this.keywordDict);
       } catch (error) {
         console.error('영화 키워드를 가져오는 중 오류가 발생했습니다:', error);
       }
     },
-    getmaxKeyword() {
+    getmaxKeyword() { // 3. 빈도가 높은 키워드 저장
       let maxCnt = -Infinity;
       for(const keyword in this.keywordDict) {
-        if ((maxCnt-2) <= this.keywordDict[keyword] <= maxCnt) {  // 오차범위 안이면 넣기.
-          this.maxKeywordList.push(keyword); // 
-          } else if(this.keywordDict[keyword] > maxCnt + 2) { // 오차범위 쳐준 것보다도 더 많은 키워드라면
+        if ((maxCnt-1) <= this.keywordDict[keyword] <= maxCnt) {  // 오차범위(1) 안이면 넣기.
+          this.maxKeywordList.push(keyword);
+          } else if(this.keywordDict[keyword] > maxCnt + 1) { // 오차범위 쳐준 것보다도 더 많은 키워드라면
           maxCnt = this.keywordDict[keyword]; // 최댓값 갱신
           this.maxKeywordList = [keyword]; // 키워드리스트 초기화한 후 키워드 넣기
         }
       }
     },
-    async getMoviesFromLaterView() {
+    async getMoviesFromLaterView() { // 1. 저장한 영화 가져오기
       const laterview = this.$store.state.laterview;
       for (const movie_id of laterview) {
         const movie = await this.getMovie(movie_id);

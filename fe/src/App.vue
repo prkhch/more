@@ -132,7 +132,7 @@ nav {
   transition: all 1s ease;
   position: relative;
   display: inline-block;
-  /* box-shadow: 0px 0px 100px 1px rgba(255,255,255,1); */
+  /* box-shadow: 0px 0px 100px 0.5px rgba(255,255,255,0.5); */
 }
 
 .btn-3 {
