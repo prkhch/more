@@ -164,6 +164,9 @@
       </button>
 
       <ul class="dropdown-menu dropdown-menu-animation" aria-labelledby="dropdownMenuButton">
+        <div style="color:white">
+          <i class="fa-solid fa-thumbtack fa-sm"></i>
+        </div>
         <li v-if="this.movies.length === 0">
           <span style="color:white">No movies available</span>
         </li>
@@ -174,12 +177,12 @@
 
         <div style="display: flex; justify-content: space-around;">
           <span class="btn">
-            <p style="color:white; cursor: pointer;" @click="previousPage" v-if="currentPage &gt; 1">이전</p>
-            <p class="disabled-link" v-else>이전</p>
+            <div class="movebtn" style="color:white; cursor: pointer;" @click="previousPage" v-if="currentPage &gt; 1">이전</div>
+            <div class="disabled-link" v-else>이전</div>
           </span>
           <span class="btn">
-            <p style="color:white; cursor: pointer;" @click="nextPage" v-if="currentPage &lt; totalPages">다음</p>
-            <p class="disabled-link" v-else>다음</p>
+            <div class="movebtn" style="color:white; cursor: pointer;" @click="nextPage" v-if="currentPage &lt; totalPages">다음</div>
+            <div class="disabled-link" v-else>다음</div>
           </span>
         </div>
         <div>
@@ -336,9 +339,13 @@ export default {
   cursor: pointer;
 }
 
-.movie-li:hover {
-  background: rgba(0, 0, 0, 0.8)
+.movie-li:hover{
+  background: rgba(0, 0, 0, 0.8);
 }
+.btn:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .dropdown-menu {
   animation-fill-mode: forwards;
   width: 300px;
@@ -452,4 +459,5 @@ export default {
     transform: rotate(0deg);
   }
 }
+
 </style>

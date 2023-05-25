@@ -2,8 +2,8 @@
   <div class="home-view">
     <!-- <h1 class="text-center text-light">{{ genrename }} 영화</h1> -->
     <div class="dropdown d-flex justify-content-center fs-1">
-      <button class="custom-btn btn-3" @click="toggleDropdown">{{ genrename }} 영화</button>
-      <ul class="dropdown-menu dropdown-genre p-0" v-if="isDropdownOpen"  v-click-outside="closeDropdown">
+      <button class="custom-btn btn-3" @click="toggleDropdown" style="width:284px;"><span>{{ genrename }} 영화</span>
+        <ul class="dropdown-menu dropdown-genre p-0" v-if="isDropdownOpen"  v-click-outside="closeDropdown">
         <li class="dropdown-item dropdown-genre mx-0 mt-0" @click="switchGenre('0'), switchGenreName('인기'), toggleDropdown()">인기</li>
         <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('28'), switchGenreName('액션'), toggleDropdown()">액션</li>
         <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('16'), switchGenreName('애니메이션'), toggleDropdown()">애니메이션</li>
@@ -15,6 +15,8 @@
         <li class="dropdown-item dropdown-genre mx-0" @click="switchGenre('53'), switchGenreName('스릴러'), toggleDropdown()">스릴러</li>
         <li class="dropdown-item dropdown-genre mx-0 mb-0" @click="switchGenre('14'), switchGenreName('판타지'), toggleDropdown()">판타지</li>
       </ul>
+      </button>
+      
     </div>
 
     <div class="" style="display: flex; justify-content: center; align-items: center;">
@@ -104,7 +106,6 @@ export default {
   watch: {
     '$store.state.genreId': {
       handler() {
-        console.log('watch')
         // genreId가 변경될 때마다 실행되는 로직
         this.page = 1; // 페이지 초기화
         this.movies = []; // 영화 목록 초기화
@@ -151,14 +152,12 @@ export default {
       } else if (this.genre_Id !== 0) {
         apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=ko-KR&sort_by=popularity.desc&page=${this.page}&with_genres=${this.genre_Id}&certification_country=KR&certification.lte=15`
       }
-      console.log(apiUrl)
       try {
         const response = await axios.get(apiUrl);
         const newMovies = response.data.results;
         this.movies = [...this.movies, ...newMovies];
         this.page++;
         this.loading = false;
-        console.log(this.movies)
       } catch (error) {
         console.error(error);
         this.loading = false;
@@ -250,8 +249,8 @@ export default {
 .dropdown-menu.dropdown-genre {
   position: absolute;
   top: 100%;
-  left: 42%;
-  width: 200px;
+  left: 0%;
+  width: 283px;
   background-color: rgba(0, 0, 0, 0.5);
   border: 1px solid #ccc;
   border-radius: 4px;
