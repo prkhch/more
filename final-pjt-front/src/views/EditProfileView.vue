@@ -21,11 +21,11 @@
         <img style="width:30%;" v-else :src="`${this.$store.state.URL}${defaultProfileImage}`" alt="프로필 이미지">
       </div>
       <div class="d-flex justify-content-between">
-        <button type="submit" class="btn save-btn mx-3" @click="clickSound();">
+        <button type="submit" class="btn edit-save-btn mx-3" @click="clickSound();" style="color:white;">
           <i class="fa-solid">저장</i>
         </button>
         <router-link :to="{ name: 'changepassword', params: { username: this.$store.state.username } }">
-          <button type="button" class="btn save-btn mx-3" @click="clickSound();">
+          <button type="button" id="save-btn" class="btn mx-3" @click="clickSound();">
             <i class="fa-solid">비밀번호 변경</i>
           </button>
         </router-link>
@@ -147,7 +147,7 @@ input[type="email"] {
   border-radius: 5px;
 }
 
-button[type="submit"] {
+.edit-save-btn {
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -156,8 +156,34 @@ button[type="submit"] {
   cursor: pointer;
 }
 
-button[type="submit"]:hover {
+.edit-save-btn:hover {
   background-color: #0056b3;
+  border-radius: 50px;
+}
+
+.button-group {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#save-btn{
+  background: rgba(0, 0, 0, 0.8);
+  margin-right: 10px;
+  color: white;
+  border-radius: 5px;
+}
+
+#save-btn:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50px;
+}
+
+#save-btn {
+  position: relative;
 }
 
 </style>

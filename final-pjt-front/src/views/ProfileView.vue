@@ -13,7 +13,7 @@
           <p>EMAIL : {{ profile.email }}</p>
           <br>
           <div class="d-flex justify-content-between">
-            <div>
+            <div class="pt-1">
               <div class="followers">
                 <span class="pe-3">팔로워 : {{ followers.length }}</span>
                 <span>팔로잉 : {{ followings.length }}</span>
@@ -21,7 +21,7 @@
             </div>
             <div v-if="isyou">
               <router-link :to="{ name: 'editprofile', params: { username: this.$store.state.username } }">
-                <button type="button" class="btn save-btn mx-3" @click="clickSound();">
+                <button type="button" class="btn save-btn mx-3" @click="clickSound();" style="color:white;">
                   <i class="fa-solid">개인 정보 수정</i>
                 </button>
               </router-link>

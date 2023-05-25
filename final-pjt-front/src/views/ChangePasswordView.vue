@@ -14,7 +14,7 @@
         <label for="confirm_password">비밀번호 확인</label>
         <input type="password" id="confirm_password" v-model="confirmPassword">
       </div>
-      <button type="submit">비밀번호 변경</button>
+      <button type="submit" class="edit-save-btn">비밀번호 변경</button>
     </form>
   </div>
 </template>
@@ -100,7 +100,7 @@ input[type="password"] {
   border-radius: 5px;
 }
 
-button[type="submit"] {
+.edit-save-btn {
   padding: 10px 20px;
   background-color: #007bff;
   color: #fff;
@@ -109,8 +109,9 @@ button[type="submit"] {
   cursor: pointer;
 }
 
-button[type="submit"]:hover {
+.edit-save-btn:hover {
   background-color: #0056b3;
+  border-radius: 50px;
 }
 </style>
   
