@@ -61,14 +61,18 @@ export default new Vuex.Store({
         }
       })
       .then((response) => {
-        console.log(response.data)
         context.commit('SAVE_TOKEN', response.data.key)
         context.commit("SAVE_USERNAME", username);
       })
       .catch((error) => {
-        console.log(error)
         if(error.response.status === 400) {
-          alert("잘못된 입력입니다!")
+          if (error.response.data.username !== undefined) {
+            alert(error.response.data.username)
+          } else if (error.response.data.password1 !== undefined) {
+            alert(error.response.data.password1[0])
+          } else if (error.response.data.non_field_errors !== undefined) {
+            alert('두 비밀번호가 일치하는지 확인하세요')
+          }
         }
       })
     },
@@ -86,9 +90,8 @@ export default new Vuex.Store({
           await context.dispatch('fetchLaterview', username);
         } 
       } catch (error) {
-        console.log(error);
         if(error.response.status === 400) {
-          alert("잘못된 입력입니다!")
+          alert("아이디와 비밀번호를 다시 확인하세요")
         }
       }
     },

@@ -54,6 +54,10 @@ export default {
 
 <style>
 .signup-view {
-  background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
 }
 </style>

@@ -51,14 +51,19 @@
       <h1>나중에 볼 영화</h1>
       <!-- 영화 저장 리스트 -->
 
-      <div class="cardgroup row row-cols-1 row-cols-md-5 g-5 mt-3">
+      <div v-if="latermovies.length === 0">
+        <p style="font-style:italic; font-size:12px;">저장한 영화가 없습니다.</p>
+      </div>
+
+      <div v-else class="cardgroup row row-cols-1 row-cols-md-5 g-5 mt-3">
         <div class="col mt-2 mb-5" v-for="movie in this.latermovies" :key="movie.id">
           <div class="card">
-            <router-link :to="{ name: 'detail', params: { id: movie.id } }">
               <div class="image-container">
-                <img :src="getImageUrl(movie.poster_path)" class="card-img-top border" alt="..." @click="playSound" @mouseover="handleHover(movie)" @mouseleave="handleHover(null)">
-              </div>
-            </router-link>
+                <router-link :to="{ name: 'detail', params: { id: movie.id } }">
+                  <img :src="getImageUrl(movie.poster_path)" class="card-img-top border" alt="..." @click="playSound" @mouseover="handleHover(movie)" @mouseleave="handleHover(null)">
+                </router-link>
+                <button @click="deleteMovie(movie.id)" class="delete-button"><i class="fa-sharp fa-solid fa-x fa-xl" style="color: #ff0000;"></i></button>
+            </div>
           </div>
           <div style="height:20px">
             <transition name="fade">
@@ -68,6 +73,7 @@
         </div>
       </div>
 
+<hr>
 
       <h1>영화 추천 리스트</h1>
       <p style="font-style:italic; font-size:12px;">나중에 볼 영화를 기반으로 추천합니다.</p>
@@ -156,6 +162,30 @@ export default {
     },
   },
   methods: {
+    fetchisLater(movieId) {
+      axios
+        .get(`${this.$store.state.URL}/api/v1/movies/${movieId}/watchlater/${this.$store.state.username}/`)
+        .then((response) => {
+          this.isLater = response.data.islater; // true or false
+        })
+        .catch((error) => {
+          if(error.response.status === 500) {
+            console.error('※로그인이 필요한 기능입니다', error);
+          } else {
+            console.error('※나중에 볼 영화 상태를 가져오고 있습니다!!!', error);
+            this.fetchisLater(movieId);
+          }
+        });
+    },
+    async deleteMovie(movieId) { // 저장한 영화 삭제
+      try {
+        await axios.post(`${this.$store.state.URL}/api/v1/movies/${movieId}/watchlater/${this.$store.state.username}/`);
+        await this.$store.dispatch('fetchLaterview', this.$store.state.username);
+        await this.fetchisLater(movieId);
+      } catch (error) {
+        console.error('저장 처리 실패:', error);
+      }
+    },
     getImageUrl(posterPath) {
       const baseUrl = 'https://image.tmdb.org/t/p/';
       const size = 'w500';
@@ -330,6 +360,25 @@ export default {
 </script>
 
 <style>
+
+.delete-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 9999;
+  opacity: 0; /* 초기에는 버튼을 숨김 */
+  transition: opacity 0.3s; /* 부드러운 효과를 위한 트랜지션 설정 */
+}
+
+.image-container:hover .delete-button {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50px;
+  opacity: 1; /* 호버 시 버튼을 나타냄 */
+}
 
 .profile-page {
   background-color: black;

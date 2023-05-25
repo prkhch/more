@@ -3,13 +3,39 @@
 <!-- 배너 -->
     <div v-if="bannerLoaded">
       <div class="banner">
-        <carousel :per-page="1" :autoplay="true" :autoplay-timeout="3000" :loop="true" :paginationEnabled="false" :mouseDrag="false" :speed="2000">
-          <slide v-for="banner in banners" :key="banner.file_path">
+        
+          <!-- <slide v-for="banner in banners" :key="banner.file_path">
+            <div class="banner-container">
+              <img :src="getImageUrl(banner.file_path)" class="banner-img d-block w-100" alt="Banner">
+            </div>
+          </slide> -->
+<!-- 
+          <slide v-if="hasBannerImg" v-for="banner in banners" :key="banner.file_path">
             <div class="banner-container">
               <img :src="getImageUrl(banner.file_path)" class="banner-img d-block w-100" alt="Banner">
             </div>
           </slide>
-        </carousel>
+          <h1 v-else>포스터가 없습니다!</h1>
+        </carousel> -->
+        
+
+        <div v-if="hasBannerImg">
+          <carousel :per-page="1" :autoplay="true" :autoplay-timeout="3000" :loop="true" :paginationEnabled="false" :mouseDrag="false" :speed="2000">
+            <slide v-for="banner in banners" :key="banner.file_path">
+              <div class="banner-container">
+                <img :src="getImageUrl(banner.file_path)" class="banner-img d-block w-100" alt="Banner">
+              </div>
+            </slide>
+          </carousel>
+        </div>
+
+        <div v-else>
+            <div class="banner-container"  style="text-align: right;">
+              <img src="@/assets/logo.png" class="banner-img d-block w-60" alt="Banner">
+            </div>
+        </div>
+
+
         <div class="banner-overlay">
           <div class="banner-title">
             {{ movie.title }}
@@ -38,9 +64,12 @@
                 <span class="check-animation" v-if="showCheckAnimation"><i class="fa-solid fa-check" style="color: #00ff1e;"></i></span>
               </button>
 
-              <button>
-                <a :href="this.youtubeUrl" target='_blank'><img src="@/assets/yt_logo_rgb_light.png" alt="" style="width:auto; height:30px;" class="ytb-btn"></a>
+              <button :class="{'transparent-button': !hasYoutubeUrl}" :disabled="!hasYoutubeUrl">
+                <a :href="youtubeUrl" target='_blank'>
+                  <img src="@/assets/yt_logo_rgb_light.png" alt="" style="width:auto; height:30px;" class="ytb-btn">
+                </a>
               </button>
+
 
             </div>
           </div>
@@ -162,7 +191,9 @@ export default {
       showCheckAnimation: false,
       editcontent : "",
       editing : false,
-      youtubeUrl : ""
+      youtubeUrl : null,
+      hasYoutubeUrl : false,
+      hasBannerImg : true,
     }
   },
   computed: {
@@ -191,15 +222,13 @@ export default {
       try {
           const response = await fetch(videoUrl);
           const data = await response.json();
-
-            if(data.results[9]) {
-              const firstVideo = data.results[9];
-              this.youtubeUrl = `https://www.youtube.com/watch?v=${firstVideo.key}`;
-            } else if(data.results[1]){
-              const secondVideo = data.results[1];
-              this.youtubeUrl = `https://www.youtube.com/watch?v=${secondVideo.key}`;
-            }
-            console.log(this.youtubeUrl)
+          const trailers = data.results.filter(video => video.type === 'Trailer');
+          if (trailers.length > 0) {
+            const trailer = trailers[0]
+            console.log(trailer)
+            this.youtubeUrl = `https://www.youtube.com/watch?v=${trailer.key}`;
+            this.hasYoutubeUrl = true
+          }
       } catch (error) {
         console.log(error);
         return null;
@@ -221,7 +250,11 @@ export default {
       const apiKey = '8b1a427d0c951e52a5869304bde7a649';
       axios.get(`https://api.themoviedb.org/3/movie/${id}/images?api_key=${apiKey}`)
         .then(response => {
-          const backdrops = response.data.backdrops.slice(1,6); //
+          const backdrops = response.data.backdrops.slice(1,6);
+          if(backdrops.length==0) {
+            this.hasBannerImg = false;
+            console.log('배너없음')
+          }
           this.banners = backdrops;
           this.bannerLoaded = true;
         })
@@ -411,6 +444,10 @@ export default {
 </script>
 
 <style>
+.transparent-button {
+  opacity: 0.2; /* 투명도를 조절하거나 필요한 스타일을 추가하세요 */
+}
+
 .input-field {
   width: 600px; /* 원하는 너비로 조정하세요 */
   height: auto; /* 원하는 높이로 조정하세요 */

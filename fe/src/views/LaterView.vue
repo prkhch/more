@@ -1,5 +1,5 @@
 <template>
-  <div class="later-view" style="position: absolute; top: 38px; right: 200px;">
+  <div class="later-view" style="position: absolute; top: 45px; right: 220px;">
 
     <vue-draggable-resizable style=" z-index: 999; border:none;" :w="1" :h="1" :handles=[]> 
     <div class="dropdown dropstart" style="transform: translateY(-50%);"  >
@@ -168,7 +168,7 @@
           <i class="fa-solid fa-thumbtack fa-sm"></i>
         </div>
         <li v-if="this.movies.length === 0">
-          <span style="color:white">No movies available</span>
+          <span style="color:white">저장한 영화가 없습니다.</span>
         </li>
         <li v-else v-for="movie in displayedMovies" :key="movie.id" class="movie-li" @click="navigateToDetailPage(movie.id)">
           <img :src="movie.poster_path" style="width:150px; height:150px;"  class="margin-auto" alt="...">
@@ -185,7 +185,7 @@
             <div class="disabled-link" v-else>다음</div>
           </span>
         </div>
-        <div>
+        <div v-if="currentPage == 0">
             <span style="color:white">{{this.currentPage}} / {{this.totalPages}}</span>
         </div>
       </ul>
