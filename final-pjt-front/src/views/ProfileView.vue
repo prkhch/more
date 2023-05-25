@@ -76,6 +76,7 @@
 <hr>
 
       <h1>영화 추천 리스트</h1>
+      <button @click="refresh()">버튼버튼</button>
       <p style="font-style:italic; font-size:12px;">나중에 볼 영화를 기반으로 추천합니다.</p>
       <!-- 영화 추천 리스트 -->
       <!-- 1. for 영화 in 영화 저장 리스트 
@@ -132,7 +133,7 @@ export default {
 
       },
       maxKeywordList : [],
-      maxKeyword : null,
+      maxKeywords : [],
       rcmMovieIds : [],
       rcmMovies : [],
       hoveredMovie: null,
@@ -162,6 +163,14 @@ export default {
     },
   },
   methods: {
+    async refresh() {
+      this.maxKeyword = null
+      this.rcmMovieIds = []
+      this.rcmMovies = []
+      await this.getmaxKeyword(); // 최대 키워드 갖기 | 최대 키워드가 여러 개일 경우 다 같이 저장 (+ 최대 키워드 오차 인정: 2)
+      await this.getRcmMovies(); // 추천 영화 아이디들을 받기
+      await this.fetchRcmMovies(); // 해당 영화 아이디들을 통해 영화 정보 받기
+    },
     fetchisLater(movieId) {
       axios
         .get(`${this.$store.state.URL}/api/v1/movies/${movieId}/watchlater/${this.$store.state.username}/`)
@@ -200,32 +209,37 @@ export default {
           continue; // latermovies에 이미 해당 영화 객체가 있으면 다음 반복으로 넘어감
         }
         const movie = await this.getMovie(movie_id);
-        if(movie.poster_path=="https://image.tmdb.org/t/p/w500/null") {
-          continue;
-        }
         console.log(movie)
         this.rcmMovies.push(movie);
       }
-      this.rcmMovies.sort(() => Math.random() - 0.5); // 한번 더 섞기
 
     },
     async getRcmMovies() { // 4. 뽑아낸 키워드 리스트중 하나를 랜덤으로 선택
       const apiKey = '8b1a427d0c951e52a5869304bde7a649';
       if (this.maxKeywordList.length > 1) {
-        const randomIndex = Math.floor(Math.random() * this.maxKeywordList.length);
-        this.maxKeyword = this.maxKeywordList[randomIndex];
+        for(let i=0; i<10; i++) {
+          const randomIndex = Math.floor(Math.random() * this.maxKeywordList.length);
+          this.maxKeyword = this.maxKeywordList[randomIndex];
+          const keywordurl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_keywords=${this.maxKeyword}&language=ko-KRcertification_country=KR&certification.lte=15&sort_by=popularity.desc`
+          try {
+            const response = await fetch(keywordurl);
+            const data = await response.json();
+            console.log(data.results) 
+            console.log('len',data.results.length) 
+            const randomIndex2 = Math.floor(Math.random() * data.results.length);
+            console.log('asdasd',randomIndex2) 
+            // 받아온 영화 데이터에서 영화 ID 추출하여 this.rcmMovieIds에 저장
+            this.rcmMovieIds.push(data.results[randomIndex2].id)
+          } catch (error) {
+            console.error('영화 데이터를 가져오는 중 오류가 발생했습니다:', error);
+          }
+        }
+        this.rcmMovieIds = this.rcmMovieIds.filter((value, index, self) => self.indexOf(value) === index);
+        console.log('4', this.rcmMovieIds)
       } else if (this.maxKeywordList.length === 1) {
         this.maxKeyword = this.maxKeywordList[0];
       }
-      const keywordurl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_keywords=${this.maxKeyword}&language=ko-KRcertification_country=KR&certification.lte=15&sort_by=popularity.desc`
-      try {
-        const response = await fetch(keywordurl);
-        const data = await response.json();
-        // 받아온 영화 데이터에서 영화 ID 추출하여 this.rcmMovieIds에 저장
-        this.rcmMovieIds = data.results.map(movie => movie.id); 
-      } catch (error) {
-        console.error('영화 데이터를 가져오는 중 오류가 발생했습니다:', error);
-      }
+      
     },
     async getKeyword() { // 2. 해당 영화의 키워드 가져오기 (키워드 딕셔너리 만들기)
       try {
@@ -238,9 +252,8 @@ export default {
 
           // ★★한 영화당 저장영화의 수만큼의 키워드 저장(적은 영화에 확률을 높이기 위함)
           // 더 많은 영화를 저장할 수록 추천받을 확률 UP
-          for (let i=0; i<this.latermovies.length; i++) { 
+          for (let i=0; i<keywords.length; i++) { 
             const keywordId = keywords[i].id;
-
             if (!(keywordId in this.keywordDict)) { // 새로운 키워드는 추가
               this.keywordDict[keywordId] = 1;
             } else {
