@@ -74,9 +74,11 @@
       </div>
 
 <hr>
-
-      <h1>영화 추천 리스트</h1>
-      <button @click="refresh()">버튼버튼</button>
+      <div class="d-flex">
+      <h1 class="mb-0 pt-1">영화 추천 리스트</h1>
+      <button type="button" class="btn save-btn mx-3" @click="refresh()">	
+        <i class="fa-solid fa-arrows-rotate fa-sm" style="color: #ffffff;"></i></button>
+      </div>
       <p style="font-style:italic; font-size:12px;">나중에 볼 영화를 기반으로 추천합니다.</p>
       <!-- 영화 추천 리스트 -->
       <!-- 1. for 영화 in 영화 저장 리스트 
@@ -220,7 +222,7 @@ export default {
         for(let i=0; i<10; i++) {
           const randomIndex = Math.floor(Math.random() * this.maxKeywordList.length);
           this.maxKeyword = this.maxKeywordList[randomIndex];
-          const keywordurl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_keywords=${this.maxKeyword}&language=ko-KRcertification_country=KR&certification.lte=15&sort_by=popularity.desc`
+          const keywordurl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_keywords=${this.maxKeyword}&language=ko-KR&certification_country=KR&certification.lte=15&sort_by=popularity.desc&vote_average.gte=7`
           try {
             const response = await fetch(keywordurl);
             const data = await response.json();
@@ -268,9 +270,9 @@ export default {
     getmaxKeyword() { // 3. 빈도가 높은 키워드 저장
       let maxCnt = -Infinity;
       for(const keyword in this.keywordDict) {
-        if ((maxCnt-1) <= this.keywordDict[keyword] <= maxCnt) {  // 오차범위(1) 안이면 넣기.
+        if ((maxCnt) <= this.keywordDict[keyword] <= maxCnt) {  // 오차범위(1) 안이면 넣기.
           this.maxKeywordList.push(keyword);
-          } else if(this.keywordDict[keyword] > maxCnt + 1) { // 오차범위 쳐준 것보다도 더 많은 키워드라면
+          } else if(this.keywordDict[keyword] > maxCnt ) { // 오차범위 쳐준 것보다도 더 많은 키워드라면
           maxCnt = this.keywordDict[keyword]; // 최댓값 갱신
           this.maxKeywordList = [keyword]; // 키워드리스트 초기화한 후 키워드 넣기
         }
