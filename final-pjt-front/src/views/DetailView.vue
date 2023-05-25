@@ -16,7 +16,7 @@
 
         <div v-else>
             <div class="banner-container"  style="text-align: right;">
-              <img src="@/assets/logo.png" class="banner-img d-block w-60" alt="Banner">
+              <img :src="getImageUrl(this.movie.poster_path)" class="banner-img d-block w-100" alt="Banner">
             </div>
         </div>
 
@@ -164,7 +164,7 @@ export default {
   },
   data() {
     return {
-      movie: { title: null, overview: null },
+      movie: { title: null, overview: null, poster_path : null},
       comments: [],
       content: "",
       bannerLoaded : false,

@@ -36,7 +36,6 @@ def movie_detail(request, movie_pk):
                 'title':title,
                 'poster_path':poster_path,
             }
-            print(poster_path)
 
             # 영화 정보 저장
             movie = Movie.objects.create(id=movie_pk, title=title, poster_path=poster_path)
