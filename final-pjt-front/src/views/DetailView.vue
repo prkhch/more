@@ -4,21 +4,6 @@
     <div v-if="bannerLoaded">
       <div class="banner">
         
-          <!-- <slide v-for="banner in banners" :key="banner.file_path">
-            <div class="banner-container">
-              <img :src="getImageUrl(banner.file_path)" class="banner-img d-block w-100" alt="Banner">
-            </div>
-          </slide> -->
-<!-- 
-          <slide v-if="hasBannerImg" v-for="banner in banners" :key="banner.file_path">
-            <div class="banner-container">
-              <img :src="getImageUrl(banner.file_path)" class="banner-img d-block w-100" alt="Banner">
-            </div>
-          </slide>
-          <h1 v-else>포스터가 없습니다!</h1>
-        </carousel> -->
-        
-
         <div v-if="hasBannerImg">
           <carousel :per-page="1" :autoplay="true" :autoplay-timeout="3000" :loop="true" :paginationEnabled="false" :mouseDrag="false" :speed="2000">
             <slide v-for="banner in banners" :key="banner.file_path">

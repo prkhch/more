@@ -211,7 +211,6 @@ export default {
           continue; // latermovies에 이미 해당 영화 객체가 있으면 다음 반복으로 넘어감
         }
         const movie = await this.getMovie(movie_id);
-        console.log(movie)
         this.rcmMovies.push(movie);
       }
 
@@ -226,10 +225,7 @@ export default {
           try {
             const response = await fetch(keywordurl);
             const data = await response.json();
-            console.log(data.results) 
-            console.log('len',data.results.length) 
             const randomIndex2 = Math.floor(Math.random() * data.results.length);
-            console.log('asdasd',randomIndex2) 
             // 받아온 영화 데이터에서 영화 ID 추출하여 this.rcmMovieIds에 저장
             this.rcmMovieIds.push(data.results[randomIndex2].id)
           } catch (error) {
@@ -237,7 +233,6 @@ export default {
           }
         }
         this.rcmMovieIds = this.rcmMovieIds.filter((value, index, self) => self.indexOf(value) === index);
-        console.log('4', this.rcmMovieIds)
       } else if (this.maxKeywordList.length === 1) {
         this.maxKeyword = this.maxKeywordList[0];
       }
@@ -270,7 +265,7 @@ export default {
     getmaxKeyword() { // 3. 빈도가 높은 키워드 저장
       let maxCnt = -Infinity;
       for(const keyword in this.keywordDict) {
-        if ((maxCnt) <= this.keywordDict[keyword] <= maxCnt) {  // 오차범위(1) 안이면 넣기.
+        if ((maxCnt-1)  <= this.keywordDict[keyword] <= (maxCnt+1)) {  // 오차범위(1) 안이면 넣기.
           this.maxKeywordList.push(keyword);
           } else if(this.keywordDict[keyword] > maxCnt ) { // 오차범위 쳐준 것보다도 더 많은 키워드라면
           maxCnt = this.keywordDict[keyword]; // 최댓값 갱신
