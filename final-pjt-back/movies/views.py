@@ -36,9 +36,11 @@ def movie_detail(request, movie_pk):
                 'title':title,
                 'poster_path':poster_path,
             }
+            print(poster_path)
 
             # 영화 정보 저장
             movie = Movie.objects.create(id=movie_pk, title=title, poster_path=poster_path)
+            print(poster_path)
             serializer = MovieSerializer(movie)
             serializer.is_valid()
             serializer.save()  # 시리얼라이저를 저장

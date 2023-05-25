@@ -59,12 +59,12 @@ export default {
           apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=ko-KR&sort_by=popularity.desc&page=${this.page}&with_genres=${genre_Id}&certification_country=KR&certification.lte=15`
         }
       } else {
-        apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${this.searchTerm}&language=ko-KR`;
+        apiUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${this.searchTerm}&language=ko-KR&vote_count.gte=100`;
       }
       try {
         const response = await fetch(apiUrl);
         const data = await response.json();
-        this.movies = data.results;
+        this.movies = data.results.filter(movie => movie.poster_path !== null);
         this.loading = false;
       } catch (error) {
         console.error(error);
