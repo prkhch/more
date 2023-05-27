@@ -8,7 +8,7 @@
 
 ---
 
-<img src="https://img.shields.io/badge/django-092E20?style=flat-square&logo=django&logoColor=white"/><img src="https://img.shields.io/badge/Vue.js2-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" style="">
+<img src="https://img.shields.io/badge/django-092E20?style=flat-square&logo=django&logoColor=white"/><img src="https://img.shields.io/badge/Vue-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" style="">
 
 #### ERD
 <img title="" src="history/erd.png" alt="">
