@@ -1,148 +1,62 @@
-## 영화 추천 플랫폼
-2023.05.17(수) ~ 2023.05.26(금)
+## MORE
+<img title="" src="assets/More Logo2.png" alt="">
 
-##### 박희창&최찬석
+## 프로젝트 진행 기간
+2023.05
 
----
+## MORE 소개
+당신이 원하는 더 많은 영화, MORE
 
-<img src="https://img.shields.io/badge/django-092E20?style=flat-square&logo=django&logoColor=white"/><img src="https://img.shields.io/badge/vue.js-4FC08D?style=flat-square&logo=vue.js&logoColor=white"/>
+## MORE 기능
+### 🎥 장르별 영화 찾기
+- TMDB API를 통해 장르별 영화 탐색
+- 인피니티 스크롤을 통해 더 많은 영화 추천 받기
 
-#### ERD
-<img title="" src="history/erd.png" alt="">
+### 📥 나중에 볼 영화 저장
+- 보고싶은 영화 저장
+- 토글을 통해 모든 페이지에서 저장한 영화 확인
 
-#### 영화추천 알고리즘
-<img title="" src="history/recmovie.png" alt="">
+### 🍒 저장한 영화를 기반으로 영화 추천
+- 빈도가 높은 저장한 영화 키워드 목록
+- 오차범위 내에서 랜덤으로 뽑기
+- 뽑은 키워드에 해당하는 영화 추천
 
-- ## DAY-9
+## 기술 스택
+<img style="width:100px; height:30px" src="https://img.shields.io/badge/Django-092E20?style=flat-square&logo=django&logoColor=white"/> <img style="width:100px; height:30px" src="https://img.shields.io/badge/Vue.js-4FC08D?style=flat-square&logo=vue.js&logoColor=white"/> <img style="width:100px; height:30px" src="https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white"/> <img style="width:100px; height:30px" src="https://img.shields.io/badge/Mattermost-0058CC?style=flat-square&logo=mattermost&logoColor=white"/> <img style="width:100px; height:30px" src="https://img.shields.io/badge/Git-F05032?style=flat-square&logo=Git&logoColor=white"/> 
 
-FE
+## 
 
-- 홈(장르 분류, TOP버튼)
-- 로딩 처리
-- 프로필(저장영화 삭제, 추천영화 새로고침, 비밀번호 수정)
-- 예고편 없는 영화, 포스터 없는 영화 처리
-- 로그인, 회원가입 더 자세한 알림
+<!-- #### ERD
+<img title="" src="assets/erd.png" alt=""> -->
 
-BE
+<!-- #### 영화추천 알고리즘
+<img title="" src="assets/recmovie.png" alt=""> -->
 
-- 비밀번호 수정
-- 디버깅
-- 예외 처리
+|메인페이지|메인페이지|
+|:---:|:---:|
+| ![1](/assets/1GIF.gif) | ![2](/assets/2GIF.gif) |
+| 장르별 영화 탐색 | 인피니티 스크롤|
 
-<img title="" src="history/day9.png" alt="">
+|회원가입|로그인|
+|:---:|:---:|
+| ![3](/assets/3GIF.gif) | ![4](/assets/4GIF.gif) |
 
-- ## DAY-8
+|영화 정보 페이지|영화 정보 페이지|
+|:---:|:---:|
+| ![5](/assets/5GIF.gif) | ![6](/assets/6GIF.gif) |
+| 영화 저장 & 좋아요 & 예고편 | 댓글 수정 & 삭제|
 
-FE
+|마이페이지|마이페이지|
+|:---:|:---:|
+| ![5](/assets/7GIF.gif) | ![6](/assets/8GIF.gif) |
+| 저장한 영화 기반 <br> 영화 추천 받기| 프로필 수정|
 
-- 프로필 수정
-- 프로필(저장한 영화)
-- 프로필(저장한 영화를 기반으로한 영화 추천)
-- 저장한 영화 메뉴 드래그 앤 드롭
+|영화 저장 토글|영화 검색|
+|:---:|:---:|
+| ![9](/assets/9GIF.gif) | ![10](/assets/10GIF.gif) |
+| 모든 페이지에서<br>저장한 영화 확인| 원하는 영화 검색|
 
-BE
+## 팀원 소개
+#### [박희창](https://github.com/PARKHEECHANG) FE
 
-- 프로필 수정
-- 댓글 이미지
-
-<img title="" src="history/day8.png" alt="">
-
-- ## DAY-7
-
-FE
-
-- 나중에 볼 영화(저장, store.state를 이용하여 모든 url에서 호출 가능)
-- 댓글 수정
-- 프로필
-
-BE
-
-- 프로필 이미지
-
-<img title="" src="history/day7.png" alt="">
-
-- ## DAY-6
-
-FE
-
-- 나중에 볼 영화(드롭다운)
-
-BE
-
-- 댓글 수정
-- 프로필
-- 프로필 수정
-- 비밀번호 변경
-
-<img title="" src="history/day6.png" alt="">
-
-- ## DAY-5
-
-FE
-
-- 좋아요
-- 나중에 볼 영화 저장
-- 애니메이션 효과
-
-BE
-
--  나중에 볼 영화
--  팔로우
--  좋아요 수
-
-<img title="" src="history/day5.png" alt="">
-
-- ## DAY-4
-
-FE
-
-- 홈페이지, 상세페이지 레이아웃
-
-BE
-
-- 영화 좋아요
-
-<img title="" src="history/day4.png" alt="">
-
-## DAY-3
-
-FE
-
-- 인피니트 스크롤(홈페이지)
-
-- 상세페이지(댓글 작성 및 삭제)
-
-- 로그인, 회원가입
-
-BE
-
-- 모델 수정 및 업데이트(유저, 영화, 댓글, 저장한 영화)
-
-- 댓글 작성 및 삭제
-
-<img title="" src="history/day3.png" alt="">
-
-## DAY-2
-
-FE 
-
-- 홈페이지
-
-- 상세페이지(영화 정보)
-
-BE 
-
-- 모델 생성
-
-- TMDB API를 통해 영화 DB 불러오기 및 저장
-
-- 영화 상세페이지 읽기
-
-- 로그인, 회원가입
-
-<img title="" src="history/day2.png" alt="loading-ag-578">
-
-## DAY-1
-
-- 기획
-- 프로젝트 생성
+#### [최찬석](https://github.com/ChoiCharles) BE

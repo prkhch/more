@@ -3,9 +3,9 @@
   <LaterView/>
   <nav>
     <div class="left-links">
-      <div @click="playSound" class="custom-btn btn-3 px-0" style="width:50px; height:50px;">
+      <div @click="playSound" class="custom-btn  px-0" style="width:150px; height:50px;">
         <span>
-        <router-link to="/"><img src="@/assets/logo.png" alt="logo" style="width:100%;"></router-link>
+        <router-link to="/"><img src="@/assets/logo.png" alt="logo" style="width:100%; background-color:lightgray"></router-link>
         </span>
       </div>
       

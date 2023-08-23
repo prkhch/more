@@ -215,28 +215,28 @@ export default {
       }
 
     },
-    async getRcmMovies() { // 4. 뽑아낸 키워드 리스트중 하나를 랜덤으로 선택
+    async getRcmMovies() { 
       const apiKey = '8b1a427d0c951e52a5869304bde7a649';
-      if (this.maxKeywordList.length > 1) {
-        for(let i=0; i<10; i++) {
-          const randomIndex = Math.floor(Math.random() * this.maxKeywordList.length);
-          this.maxKeyword = this.maxKeywordList[randomIndex];
-          const keywordurl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_keywords=${this.maxKeyword}&language=ko-KR&certification_country=KR&certification.lte=15&sort_by=popularity.desc&vote_average.gte=7`
+      const topKeywords = this.maxKeywordList.slice(0, 3); // 상위 3개 키워드만 추출
+
+      if (topKeywords.length > 0) {
+        for (const keyword of topKeywords) { // 상위 3개 키워드에 대해서만 반복
+          const keywordurl = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_keywords=${keyword}&language=ko-KR&certification_country=KR&certification.lte=15&sort_by=popularity.desc&vote_average.gte=7`;
+
           try {
             const response = await fetch(keywordurl);
             const data = await response.json();
-            const randomIndex2 = Math.floor(Math.random() * data.results.length);
+            const randomIndex = Math.floor(Math.random() * data.results.length); // 랜덤 인덱스 생성
             // 받아온 영화 데이터에서 영화 ID 추출하여 this.rcmMovieIds에 저장
-            this.rcmMovieIds.push(data.results[randomIndex2].id)
+            this.rcmMovieIds.push(data.results[randomIndex].id);
           } catch (error) {
             console.error('영화 데이터를 가져오는 중 오류가 발생했습니다:', error);
           }
         }
+
+        // 중복된 ID 제거
         this.rcmMovieIds = this.rcmMovieIds.filter((value, index, self) => self.indexOf(value) === index);
-      } else if (this.maxKeywordList.length === 1) {
-        this.maxKeyword = this.maxKeywordList[0];
       }
-      
     },
     async getKeyword() { // 2. 해당 영화의 키워드 가져오기 (키워드 딕셔너리 만들기)
       try {
@@ -262,16 +262,17 @@ export default {
         console.error('영화 키워드를 가져오는 중 오류가 발생했습니다:', error);
       }
     },
-    getmaxKeyword() { // 3. 빈도가 높은 키워드 저장
-      let maxCnt = -Infinity;
-      for(const keyword in this.keywordDict) {
-        if ((maxCnt-1)  <= this.keywordDict[keyword] <= (maxCnt+1)) {  // 오차범위(1) 안이면 넣기.
-          this.maxKeywordList.push(keyword);
-          } else if(this.keywordDict[keyword] > maxCnt ) { // 오차범위 쳐준 것보다도 더 많은 키워드라면
-          maxCnt = this.keywordDict[keyword]; // 최댓값 갱신
-          this.maxKeywordList = [keyword]; // 키워드리스트 초기화한 후 키워드 넣기
-        }
-      }
+    getmaxKeyword() {
+      // 키워드와 빈도를 배열로 변환
+      console.log(this.keywordDict)
+      const keywordEntries = Object.entries(this.keywordDict);
+
+      // 빈도를 기준으로 정렬
+      keywordEntries.sort((a, b) => b[1] - a[1]);
+
+      // 정렬된 키워드만 추출
+      this.maxKeywordList = keywordEntries.map(entry => entry[0]);
+
     },
     async getMoviesFromLaterView() { // 1. 저장한 영화 가져오기
       const laterview = this.$store.state.laterview;

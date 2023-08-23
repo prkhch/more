@@ -141,6 +141,7 @@ SITE_ID = 1
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
+    'http://192.168.0.22:8080'
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
