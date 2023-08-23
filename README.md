@@ -1,5 +1,5 @@
 ## MORE
-<img title="" src="assets/More Logo2.png" alt="">
+<img title="" src="assets/MORE Logo2.png" alt="">
 
 ## 프로젝트 진행 기간
 2023.05
