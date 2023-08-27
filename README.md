@@ -22,7 +22,8 @@
 - 뽑은 키워드에 해당하는 영화 추천
 
 ## 기술 스택
-<img style="width:100px; height:30px" src="https://img.shields.io/badge/Django-092E20?style=flat-square&logo=django&logoColor=white"/> <img style="width:100px; height:30px" src="https://img.shields.io/badge/Vue.js-4FC08D?style=flat-square&logo=vue.js&logoColor=white"/> <img style="width:100px; height:30px" src="https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white"/> <img style="width:100px; height:30px" src="https://img.shields.io/badge/Mattermost-0058CC?style=flat-square&logo=mattermost&logoColor=white"/> <img style="width:100px; height:30px" src="https://img.shields.io/badge/Git-F05032?style=flat-square&logo=Git&logoColor=white"/> 
+<img style="width:100px; height:30px" src="https://img.shields.io/badge/Django-092E20?style=flat-square&logo=django&logoColor=white"/> <img style="width:100px; height:30px" src="https://img.shields.io/badge/Vue.js-4FC08D?style=flat-square&logo=vue.js&logoColor=white"/> <img style="width:100px; height:30px" src="https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white"/> <img style="width:100px; height:30px" src="https://img.shields.io/badge/bootstrap-7952B3?style=flat-square&logo=bootstrap&logoColor=white"/> 
+
 
 ## 
 
