@@ -58,6 +58,6 @@
 | 모든 페이지에서<br>저장한 영화 확인| 원하는 영화 검색|
 
 ## 팀원 소개
-#### [박희창](https://github.com/PARKHEECHANG) FE
+#### [박희창](https://github.com/prkhch) FE
 
 #### [최찬석](https://github.com/ChoiCharles) BE
