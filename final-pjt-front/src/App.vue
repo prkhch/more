@@ -1,63 +1,87 @@
 <template>
   <div id="app">
-  <LaterView/>
-  <nav>
-    <div class="left-links">
-      <div @click="playSound" class="custom-btn  px-0" style="width:150px; height:50px;">
-        <span>
-        <router-link to="/"><img src="@/assets/logo.png" alt="logo" style="width:100%; background-color:lightgray"></router-link>
-        </span>
-      </div>
-      
-      <div @click="playSound" class="custom-btn btn-3">
-        <span>
-        <router-link to="/search">
-          <i class="fa-solid fa-magnifying-glass" style="color: #FFFFFF;"></i>
-        </router-link>
-        </span>
-      </div>
-    </div>
+    <LaterView />
+    <nav>
+      <div class="left-links">
+        <div
+          @click="playSound"
+          class="custom-btn px-0"
+          style="width: 150px; height: 50px; margin: 10px"
+        >
+          <span>
+            <router-link to="/"
+              ><img src="@/assets/logo.png" alt="logo" style="width: 100%"
+            /></router-link>
+          </span>
+        </div>
 
-    <div class="right-links">
-      <div v-if="hasToken" @click="playSound" class="custom-btn btn-3"><span>
-        <router-link :to="{ name: 'profile', params:{username:$store.state.username} }" style="text-decoration: underline;color:white;">{{ $store.state.username }}</router-link></span>
-      </div>
-      <div v-if="hasToken" @click="playSound" >
-        <button class="custom-btn btn-3" @click="logout"><span>로그아웃</span></button>
-      </div>
-      <div v-else @click="playSound">
-        <div class="custom-btn btn-3">
-        <router-link to="/login" style="text-decoration:none; color:white;"><span>로그인</span></router-link>
-        </div>
-        <div class="custom-btn btn-3">
-        <router-link to="/signup" style="text-decoration:none; color:white;"><span>회원가입</span></router-link>
+        <div @click="playSound" class="custom-btn btn-3">
+          <span>
+            <router-link to="/search">
+              <i
+                class="fa-solid fa-magnifying-glass"
+                style="color: #ffffff"
+              ></i>
+            </router-link>
+          </span>
         </div>
       </div>
-  
-    </div>
-  </nav>
+
+      <div class="right-links">
+        <div v-if="hasToken" @click="playSound" class="custom-btn btn-3">
+          <span>
+            <router-link
+              :to="{
+                name: 'profile',
+                params: { username: $store.state.username },
+              }"
+              style="text-decoration: underline; color: white"
+              >{{ $store.state.username }}</router-link
+            ></span
+          >
+        </div>
+        <div v-if="hasToken" @click="playSound">
+          <button class="custom-btn btn-3" @click="logout">
+            <span>로그아웃</span>
+          </button>
+        </div>
+        <div v-else @click="playSound">
+          <div class="custom-btn btn-3">
+            <router-link to="/login" style="text-decoration: none; color: white"
+              ><span>로그인</span></router-link
+            >
+          </div>
+          <div class="custom-btn btn-3">
+            <router-link
+              to="/signup"
+              style="text-decoration: none; color: white"
+              ><span>회원가입</span></router-link
+            >
+          </div>
+        </div>
+      </div>
+    </nav>
 
     <!-- router-view -->
     <div class="page">
-      <router-view/> 
+      <router-view />
     </div>
-
   </div>
 </template>
 
 <script>
-import Vue from 'vue';
-import VueCarousel from 'vue-carousel';
-import LaterView from '@/views/LaterView.vue'
-import VueDraggableResizable from 'vue-draggable-resizable'
-import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
+import Vue from "vue";
+import VueCarousel from "vue-carousel";
+import LaterView from "@/views/LaterView.vue";
+import VueDraggableResizable from "vue-draggable-resizable";
+import "vue-draggable-resizable/dist/VueDraggableResizable.css";
 
-Vue.component('vue-draggable-resizable', VueDraggableResizable)
+Vue.component("vue-draggable-resizable", VueDraggableResizable);
 Vue.use(VueCarousel);
 
 export default {
-  components : {
-    LaterView
+  components: {
+    LaterView,
   },
   data() {
     return {
@@ -72,15 +96,14 @@ export default {
   },
   methods: {
     logout() {
-      this.$store.dispatch('logout');
+      this.$store.dispatch("logout");
     },
     playSound() {
-      var audio = new Audio(require('@/assets/click.mp3'));
-      audio.play()
-        .catch(error => {
-            // 오류 처리 로직 추가
-            console.error('소리를 재생할 수 없습니다:', error);
-          });
+      var audio = new Audio(require("@/assets/click.mp3"));
+      audio.play().catch((error) => {
+        // 오류 처리 로직 추가
+        console.error("소리를 재생할 수 없습니다:", error);
+      });
     },
   },
 };
@@ -90,13 +113,13 @@ export default {
 #app {
   font-family: "Noto Sans KR", sans-serif;
 }
-body{
+body {
   background-color: black;
 }
 
 ul {
-  padding-left : 0;
-  list-style : none;
+  padding-left: 0;
+  list-style: none;
 }
 .detail-view,
 .home-view,
@@ -107,17 +130,16 @@ ul {
 .later-view {
   padding-left: 3rem;
   padding-right: 3rem;
-  background-color : black;
-  color : white;
+  background-color: black;
+  color: white;
 }
-
 
 /* navbar Style */
 nav {
   padding: 1rem;
   display: flex;
   justify-content: space-between;
-  background-color: rgba(0,0,0,1);
+  background-color: rgba(0, 0, 0, 1);
 }
 
 .left-links,
@@ -166,7 +188,7 @@ nav {
   width: 0%;
   height: 2px;
 }
-.btn-3:hover{
+.btn-3:hover {
   background: transparent;
 }
 .btn-3:hover:before {
@@ -175,7 +197,7 @@ nav {
 .btn-3:hover:after {
   width: 100%;
 }
-.btn-3 span:hover{
+.btn-3 span:hover {
   background: transparent;
 }
 .btn-3 span:before,
@@ -202,7 +224,6 @@ nav {
   width: 100%;
 }
 
-
 .dank-ass-loader {
   display: flex;
   flex-direction: column;
@@ -220,7 +241,7 @@ nav {
   border-right: 48px solid transparent;
   border-bottom: 86.4px solid #ffffff;
   -webkit-animation: blink 1s infinite;
-          animation: blink 1s infinite;
+  animation: blink 1s infinite;
   filter: drop-shadow(0 0 100px #0287af);
 }
 .arrow.down {
@@ -228,99 +249,99 @@ nav {
 }
 .arrow.outer-1 {
   -webkit-animation-delay: -0.0555555556s;
-          animation-delay: -0.0555555556s;
+  animation-delay: -0.0555555556s;
 }
 .arrow.outer-2 {
   -webkit-animation-delay: -0.1111111111s;
-          animation-delay: -0.1111111111s;
+  animation-delay: -0.1111111111s;
 }
 .arrow.outer-3 {
   -webkit-animation-delay: -0.1666666667s;
-          animation-delay: -0.1666666667s;
+  animation-delay: -0.1666666667s;
 }
 .arrow.outer-4 {
   -webkit-animation-delay: -0.2222222222s;
-          animation-delay: -0.2222222222s;
+  animation-delay: -0.2222222222s;
 }
 .arrow.outer-5 {
   -webkit-animation-delay: -0.2777777778s;
-          animation-delay: -0.2777777778s;
+  animation-delay: -0.2777777778s;
 }
 .arrow.outer-6 {
   -webkit-animation-delay: -0.3333333333s;
-          animation-delay: -0.3333333333s;
+  animation-delay: -0.3333333333s;
 }
 .arrow.outer-7 {
   -webkit-animation-delay: -0.3888888889s;
-          animation-delay: -0.3888888889s;
+  animation-delay: -0.3888888889s;
 }
 .arrow.outer-8 {
   -webkit-animation-delay: -0.4444444444s;
-          animation-delay: -0.4444444444s;
+  animation-delay: -0.4444444444s;
 }
 .arrow.outer-9 {
   -webkit-animation-delay: -0.5s;
-          animation-delay: -0.5s;
+  animation-delay: -0.5s;
 }
 .arrow.outer-10 {
   -webkit-animation-delay: -0.5555555556s;
-          animation-delay: -0.5555555556s;
+  animation-delay: -0.5555555556s;
 }
 .arrow.outer-11 {
   -webkit-animation-delay: -0.6111111111s;
-          animation-delay: -0.6111111111s;
+  animation-delay: -0.6111111111s;
 }
 .arrow.outer-12 {
   -webkit-animation-delay: -0.6666666667s;
-          animation-delay: -0.6666666667s;
+  animation-delay: -0.6666666667s;
 }
 .arrow.outer-13 {
   -webkit-animation-delay: -0.7222222222s;
-          animation-delay: -0.7222222222s;
+  animation-delay: -0.7222222222s;
 }
 .arrow.outer-14 {
   -webkit-animation-delay: -0.7777777778s;
-          animation-delay: -0.7777777778s;
+  animation-delay: -0.7777777778s;
 }
 .arrow.outer-15 {
   -webkit-animation-delay: -0.8333333333s;
-          animation-delay: -0.8333333333s;
+  animation-delay: -0.8333333333s;
 }
 .arrow.outer-16 {
   -webkit-animation-delay: -0.8888888889s;
-          animation-delay: -0.8888888889s;
+  animation-delay: -0.8888888889s;
 }
 .arrow.outer-17 {
   -webkit-animation-delay: -0.9444444444s;
-          animation-delay: -0.9444444444s;
+  animation-delay: -0.9444444444s;
 }
 .arrow.outer-18 {
   -webkit-animation-delay: -1s;
-          animation-delay: -1s;
+  animation-delay: -1s;
 }
 .arrow.inner-1 {
   -webkit-animation-delay: -0.1666666667s;
-          animation-delay: -0.1666666667s;
+  animation-delay: -0.1666666667s;
 }
 .arrow.inner-2 {
   -webkit-animation-delay: -0.3333333333s;
-          animation-delay: -0.3333333333s;
+  animation-delay: -0.3333333333s;
 }
 .arrow.inner-3 {
   -webkit-animation-delay: -0.5s;
-          animation-delay: -0.5s;
+  animation-delay: -0.5s;
 }
 .arrow.inner-4 {
   -webkit-animation-delay: -0.6666666667s;
-          animation-delay: -0.6666666667s;
+  animation-delay: -0.6666666667s;
 }
 .arrow.inner-5 {
   -webkit-animation-delay: -0.8333333333s;
-          animation-delay: -0.8333333333s;
+  animation-delay: -0.8333333333s;
 }
 .arrow.inner-6 {
   -webkit-animation-delay: -1s;
-          animation-delay: -1s;
+  animation-delay: -1s;
 }
 
 @-webkit-keyframes blink {
@@ -347,4 +368,3 @@ nav {
   }
 }
 </style>
-

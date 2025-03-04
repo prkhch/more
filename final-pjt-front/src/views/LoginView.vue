@@ -8,8 +8,8 @@
         id="user-id"
         v-model="username"
         @keyup.enter="login"
-      >
-      <label for="user-id" style="color: black;">아이디를 입력하세요</label>
+      />
+      <label for="user-id" style="color: black">아이디를 입력하세요</label>
     </div>
     <div class="form-floating">
       <input
@@ -18,10 +18,14 @@
         id="user-password"
         v-model="password"
         @keyup.enter="login"
+      />
+      <label for="user-password" style="color: black"
+        >비밀번호를 입력하세요</label
       >
-      <label for="user-password" style="color: black;">비밀번호를 입력하세요</label>
     </div>
-    <button type="button" class="btn btn-primary btn-block" @click="login">로그인</button>
+    <button type="button" class="btn btn-primary btn-block" @click="login">
+      로그인
+    </button>
 
     <router-link :to="{ name: 'signup' }">
       <button type="button" class="btn btn-link btn-block">회원가입</button>
@@ -35,7 +39,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 50vh;
+  height: 100vh;
+  padding-bottom: 50vh;
 }
 
 .form-floating {
@@ -70,27 +75,26 @@
 }
 </style>
 
-
 <script>
 // import axios from "axios"
 
 export default {
   data() {
     return {
-      username : "",
-      password : "",
+      username: "",
+      password: "",
     };
   },
   methods: {
     login() {
-      const username = this.username
-      const password = this.password
+      const username = this.username;
+      const password = this.password;
       const payload = {
-        username, password
-      }
-      this.$store.dispatch('login', payload)
+        username,
+        password,
+      };
+      this.$store.dispatch("login", payload);
     },
-    
-  }
-}
+  },
+};
 </script>

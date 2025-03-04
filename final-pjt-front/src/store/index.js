@@ -74,7 +74,9 @@ export default new Vuex.Store({
               alert("두 비밀번호가 일치하는지 확인하세요");
             }
           } else {
-            alert("알 수 없는 오류가 발생했습니다.");
+            alert(
+              "죄송합니다. 서버가 없어 실제 회원가입 및 로그인이 불가능합니다."
+            );
           }
         });
     },
@@ -98,7 +100,9 @@ export default new Vuex.Store({
         if (error.response && error.response.status === 400) {
           alert("아이디와 비밀번호를 다시 확인하세요");
         } else {
-          alert("알 수 없는 오류가 발생했습니다.");
+          alert(
+            "죄송합니다. 서버가 없어 실제 회원가입 및 로그인이 불가능합니다."
+          );
         }
       }
     },
